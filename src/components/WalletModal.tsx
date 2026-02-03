@@ -1,173 +1,347 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import AlertModal from '@/components/AlertModal';
-import LoadingModal from '@/components/LoadingModal';
+import AlertModal from './AlertModal';
+import LoadingModal from './LoadingModal';
 
 interface WalletModalProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
+type PaymentMethod = 'truemoney' | 'promptpay';
+
 export default function WalletModal({ isOpen, onClose }: WalletModalProps) {
-    const { wallet } = useAuth();
-    const [amount, setAmount] = useState<number>(0);
-    const [customAmount, setCustomAmount] = useState('');
-    const [method, setMethod] = useState<'truemoney' | 'promptpay'>('truemoney');
-    const [isLoading, setIsLoading] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
+    const { user, wallet } = useAuth();
+    const [step, setStep] = useState<'amount' | 'method' | 'confirm'>('amount');
+    const [amount, setAmount] = useState('');
+    const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [alert, setAlert] = useState({ show: false, message: '', type: 'success' as 'success' | 'error' });
+    const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
 
-    const amounts = [100, 300, 500, 1000];
+    // Reset state when modal opens/closes
+    useEffect(() => {
+        if (isOpen) {
+            setStep('amount');
+            setAmount('');
+            setSelectedMethod(null);
+            setPhoneNumber('');
+            setTimeLeft(600);
+            document.body.style.overflow = 'hidden'; // Lock scroll
+        } else {
+            document.body.style.overflow = 'unset'; // Unlock scroll
+        }
+        return () => {
+            document.body.style.overflow = 'unset'; // Cleanup
+        };
+    }, [isOpen]);
 
-    const handleTopUp = () => {
-        const topUpAmount = amount || Number(customAmount);
-        if (topUpAmount <= 0) return;
+    // Timer Logic for Confirmation Page
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (isOpen && step === 'confirm' && timeLeft > 0) {
+            timer = setInterval(() => {
+                setTimeLeft((prev) => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(timer);
+    }, [isOpen, step, timeLeft]);
 
-        setIsLoading(true);
-        setTimeout(() => {
-            wallet.topUp(topUpAmount);
-            setIsLoading(false);
-            setAmount(0);
-            setCustomAmount('');
-            onClose();
-            setTimeout(() => setShowSuccess(true), 100);
-        }, 1500);
+    const formatTime = (seconds: number) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s.toString().padStart(2, '0')}`;
     };
 
-    if (!isOpen && !showSuccess) return null;
+    const handleNextStep = () => {
+        if (step === 'amount') {
+            const numAmount = parseFloat(amount);
+            if (isNaN(numAmount) || numAmount <= 0) {
+                setAlert({ show: true, message: 'กรุณากรอกจำนวนเงินให้ถูกต้อง', type: 'error' });
+                return;
+            }
+            setStep('method');
+        } else if (step === 'method') {
+            if (!selectedMethod) return;
+            setStep('confirm');
+        }
+    };
+
+    const handleBackStep = () => {
+        if (step === 'method') setStep('amount');
+        if (step === 'confirm') setStep('method');
+    };
+
+    const handleTopUp = async () => {
+        const numAmount = parseFloat(amount);
+        if (isNaN(numAmount) || numAmount <= 0) return;
+
+        // if (selectedMethod === 'truemoney' && !phoneNumber) {
+        //     setAlert({ show: true, message: 'กรุณากรอกเบอร์โทรศัพท์', type: 'error' });
+        //     return;
+        // }
+
+        setIsSubmitting(true);
+        try {
+            // Simulated delay
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            const success = await wallet.topUp(numAmount);
+
+            if (success) {
+                setAlert({
+                    show: true,
+                    message: `เติมเงินสำเร็จ ${numAmount.toLocaleString()} บาท`,
+                    type: 'success'
+                });
+                // Close modal after short delay
+                setTimeout(() => {
+                    onClose();
+                }, 2000);
+            } else {
+                setAlert({ show: true, message: 'การทำรายการล้มเหลว กรุณาลองใหม่', type: 'error' });
+            }
+        } catch (error) {
+            setAlert({ show: true, message: 'การเชื่อมต่อขัดข้อง', type: 'error' });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (!isOpen) return null;
 
     return (
-        <>
-            {/* Loading Modal - ใช้ component เดิม */}
-            <LoadingModal isOpen={isLoading} />
 
-            {/* Success Alert */}
-            <AlertModal
-                isOpen={showSuccess}
-                onClose={() => setShowSuccess(false)}
-                title="เติมเงินสำเร็จ"
-                message="ยอดเงินได้ถูกเพิ่มเข้ากระเป๋าของคุณแล้ว"
-                type="success"
-            />
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300" onClick={onClose} />
 
-            {/* Wallet Modal */}
-            {isOpen && !isLoading && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    {/* Backdrop */}
-                    <div
-                        className="absolute inset-0 backdrop-blur-md bg-black/40"
-                        onClick={onClose}
-                    ></div>
+            {/* Modal Container */}
+            <div className={`relative bg-[#0a0a0f] border border-white/10 rounded-xl overflow-hidden w-full max-w-[420px] shadow-2xl shadow-black/50 transform transition-all duration-300 flex flex-col max-h-[85vh] ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}`}>
 
-                    {/* Modal Content */}
-                    <div className="relative bg-[#0f0f17] border border-white/10 rounded-2xl w-full max-w-md max-h-[85vh] overflow-y-auto shadow-2xl">
-                        {/* Header */}
-                        <div className="sticky top-0 bg-[#0f0f17] border-b border-white/10 p-4 flex items-center justify-between">
-                            <h2 className="text-xl font-bold text-white">เติมเงิน</h2>
-                            <button
-                                onClick={onClose}
-                                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
-                            >
-                                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
+                {/* Header Section */}
+                <div className="p-8 pb-4 relative z-10 shrink-0">
+                    <div className="flex justify-between items-center mb-6">
+                        <div className="flex items-center gap-3">
+                            {step !== 'amount' && (
+                                <button onClick={handleBackStep} className="group flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                                    <svg className="w-5 h-5 text-gray-400 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                                </button>
+                            )}
+                            <div>
+                                <h2 className="text-xl font-bold text-white tracking-tight">
+                                    {step === 'amount' ? 'ระบุยอดเงิน' : step === 'method' ? 'เลือกช่องทาง' : 'ยืนยันรายการ'}
+                                </h2>
+                                <p className="text-xs text-gray-500 font-medium">ขั้นตอน {step === 'amount' ? '1' : step === 'method' ? '2' : '3'} จาก 3</p>
+                            </div>
                         </div>
+                        <button onClick={onClose} className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
 
-                        {/* Content */}
-                        <div className="p-4">
-                            {/* Balance Display */}
-                            <div className="bg-gradient-to-r from-[#667eea] to-[#764ba2] rounded-xl p-5 text-center mb-5">
-                                <p className="text-white/80 text-sm mb-1">ยอดเงินคงเหลือ</p>
-                                <h3 className="text-3xl font-bold text-white">฿{wallet.balance.toLocaleString()}</h3>
+                    {/* Minimal Step Indicator */}
+                    <div className="flex gap-1 h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div className={`h-full transition-all duration-500 ease-out bg-indigo-500 ${step === 'amount' ? 'w-1/3' : step === 'method' ? 'w-2/3' : 'w-full'}`} />
+                    </div>
+                </div>
+
+                {/* Content Area */}
+                <div className="p-8 pt-2 overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] flex-1 min-h-0">
+
+                    {/* Amount */}
+                    {step === 'amount' && (
+                        <div className="space-y-8 animate-fadeIn">
+                            <div className="text-center space-y-2">
+                                <p className="text-gray-500 text-xs uppercase tracking-wider font-bold">ยอดเงินคงเหลือปัจจุบัน</p>
+                                <p className="text-3xl font-bold text-white tracking-tight">฿{user?.creditBalance?.toLocaleString() || '0'}</p>
                             </div>
 
-                            {/* Amount Selection */}
-                            <p className="text-white font-medium mb-3">เลือกจำนวนเงิน</p>
-                            <div className="grid grid-cols-4 gap-2 mb-4">
-                                {amounts.map((v) => (
+                            <div className="relative group">
+                                <input
+                                    type="number"
+                                    value={amount}
+                                    onChange={(e) => setAmount(e.target.value)}
+                                    placeholder="0.00"
+                                    className="w-full bg-transparent border-b-2 border-white/10 focus:border-indigo-500 py-4 text-center text-5xl font-bold text-white focus:outline-none transition-all placeholder:text-gray-700"
+                                    autoFocus
+                                />
+                                <p className="text-center text-gray-500 text-sm mt-2">ระบุจำนวนเงินที่ต้องการเติม</p>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-3">
+                                {[100, 300, 500, 1000, 2000, 5000].map(val => (
                                     <button
-                                        key={v}
-                                        onClick={() => { setAmount(v); setCustomAmount(''); }}
-                                        className={`py-3 rounded-lg border text-sm font-bold transition-all ${amount === v
-                                            ? 'bg-purple-600/20 border-purple-500 text-white'
-                                            : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:text-white'
-                                            }`}
+                                        key={val}
+                                        onClick={() => setAmount(val.toString())}
+                                        className="py-3 rounded-xl bg-white/[0.03] border border-white/5 text-gray-400 text-sm font-medium hover:bg-indigo-500/10 hover:text-indigo-400 hover:border-indigo-500/30 transition-all active:scale-95"
                                     >
-                                        ฿{v}
+                                        +{val.toLocaleString()}
                                     </button>
                                 ))}
                             </div>
-
-                            {/* Custom Amount */}
-                            <div className="mb-5">
-                                <label className="text-gray-500 text-xs mb-2 block">หรือระบุจำนวนเงินเอง</label>
-                                <input
-                                    type="number"
-                                    value={customAmount}
-                                    onChange={(e) => {
-                                        setCustomAmount(e.target.value);
-                                        setAmount(0);
-                                    }}
-                                    placeholder="0.00"
-                                    className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500/50 transition-colors"
-                                />
-                            </div>
-
-                            {/* Divider */}
-                            <div className="h-px bg-white/10 mb-5"></div>
-
-                            {/* Payment Method */}
-                            <p className="text-white font-medium mb-3">ช่องทางชำระเงิน</p>
-                            <div className="space-y-2 mb-5">
-                                <button
-                                    onClick={() => setMethod('truemoney')}
-                                    className={`w-full p-3 rounded-lg border flex items-center gap-3 transition-all ${method === 'truemoney'
-                                        ? 'bg-orange-500/10 border-orange-500 text-white'
-                                        : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
-                                        }`}
-                                >
-                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${method === 'truemoney' ? 'bg-orange-500 text-white' : 'bg-white/10'}`}>T</div>
-                                    <span className="font-medium text-sm">TrueMoney Wallet</span>
-                                    {method === 'truemoney' && (
-                                        <svg className="w-4 h-4 ml-auto text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    )}
-                                </button>
-                                <button
-                                    onClick={() => setMethod('promptpay')}
-                                    className={`w-full p-3 rounded-lg border flex items-center gap-3 transition-all ${method === 'promptpay'
-                                        ? 'bg-blue-500/10 border-blue-500 text-white'
-                                        : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
-                                        }`}
-                                >
-                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${method === 'promptpay' ? 'bg-blue-500 text-white' : 'bg-white/10'}`}>P</div>
-                                    <span className="font-medium text-sm">QR PromptPay</span>
-                                    {method === 'promptpay' && (
-                                        <svg className="w-4 h-4 ml-auto text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    )}
-                                </button>
-                            </div>
-
-                            {/* Submit Button */}
-                            <button
-                                onClick={handleTopUp}
-                                disabled={!amount && !Number(customAmount)}
-                                className={`w-full py-3 rounded-xl font-bold transition-all ${(amount || Number(customAmount)) > 0
-                                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:opacity-90 active:scale-[0.98]'
-                                    : 'bg-white/5 text-gray-500 cursor-not-allowed'
-                                    }`}
-                            >
-                                ยืนยันการเติมเงิน{(amount || Number(customAmount)) > 0 ? ` ฿${(amount || Number(customAmount)).toLocaleString()}` : ''}
-                            </button>
                         </div>
-                    </div>
+                    )}
+
+                    {/* Method */}
+                    {step === 'method' && (
+                        <div className="space-y-6 animate-fadeIn">
+                            <div className="text-center mb-6">
+                                <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">ยอดชำระสุทธิ</p>
+                                <p className="font-bold text-white text-4xl">฿{parseFloat(amount).toLocaleString()}</p>
+                            </div>
+
+                            <div className="space-y-3">
+                                {[
+                                    {
+                                        id: 'promptpay',
+                                        label: 'QR Code PromptPay',
+                                        desc: 'ฟรีค่าธรรมเนียม',
+                                        icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" /></svg>,
+                                        activeColor: 'bg-indigo-500',
+                                        activeBorder: 'border-indigo-500'
+                                    },
+                                    {
+                                        id: 'truemoney',
+                                        label: 'TrueMoney Wallet',
+                                        desc: 'เติมเงินผ่านเบอร์',
+                                        icon: <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v-2h-2v2zm2-4h-2V7h2v6z" /></svg>,
+                                        activeColor: 'bg-orange-500',
+                                        activeBorder: 'border-orange-500'
+                                    }
+                                ].map(method => {
+                                    const isSelected = selectedMethod === method.id;
+                                    return (
+                                        <button
+                                            key={method.id}
+                                            onClick={() => setSelectedMethod(method.id as PaymentMethod)}
+                                            className={`w-full p-4 rounded-xl border transition-all duration-300 flex items-center gap-4 text-left group
+                                                ${isSelected
+                                                    ? `bg-white/[0.03] ${method.activeBorder} shadow-lg shadow-black/20`
+                                                    : 'bg-transparent border-white/5 hover:bg-white/[0.02] hover:border-white/10'
+                                                }
+                                            `}
+                                        >
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 flex-shrink-0
+                                                ${isSelected
+                                                    ? `${method.activeColor} text-white shadow-lg`
+                                                    : 'bg-white/5 text-gray-400 group-hover:bg-white/10 group-hover:text-gray-200'
+                                                }
+                                            `}>
+                                                {method.icon}
+                                            </div>
+
+                                            <div className="flex-1 min-w-0">
+                                                <span className={`block font-bold text-sm tracking-wide transition-colors ${isSelected ? 'text-white' : 'text-gray-300'}`}>
+                                                    {method.label}
+                                                </span>
+                                                <span className={`block text-xs transition-colors mt-0.5 ${isSelected ? 'text-gray-400' : 'text-gray-600'}`}>
+                                                    {method.desc}
+                                                </span>
+                                            </div>
+
+                                            <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-300 overflow-hidden
+                                                ${isSelected ? `${method.activeBorder} ${method.activeColor}` : 'border-white/20 group-hover:border-white/40'}
+                                            `}>
+                                                {isSelected && <div className="w-2 h-2 rounded-full bg-white shadow-sm" />}
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Confirm */}
+                    {step === 'confirm' && (
+                        <div className="flex flex-col h-full animate-fadeIn">
+                            {selectedMethod === 'promptpay' ? (
+                                <div className="flex flex-col items-center space-y-6">
+                                    <div className="text-center space-y-2">
+                                        <h4 className="text-white font-bold text-xl tracking-wide">QR PromptPay</h4>
+                                        <p className="text-gray-400 text-sm font-medium">สแกน QR Code เพื่อเติมเงิน</p>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-xl shadow-lg shadow-white/5">
+                                        <img src={`https://promptpay.io/0812345678/${amount}.png`} alt="QR" className="w-48 h-48 mix-blend-multiply" />
+                                    </div>
+                                    <div className="text-center space-y-1">
+                                        <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">สแกน QR Code เพื่อเติมเงิน</p>
+                                        <div className="text-2xl font-bold text-white">฿{parseFloat(amount).toLocaleString()}</div>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-indigo-400 bg-indigo-500/10 px-4 py-2 rounded-lg border border-indigo-500/20">
+                                        <svg className="w-4 h-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                        <span className="font-mono font-medium">{formatTime(timeLeft)}</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center space-y-8 py-2">
+
+
+                                    <div className="text-center space-y-2">
+                                        <h4 className="text-white font-bold text-xl tracking-wide">TrueMoney Wallet</h4>
+                                        <p className="text-gray-400 text-sm font-medium">สแกน QR Code เพื่อเติมเงิน</p>
+                                    </div>
+
+                                    <div className="p-4 bg-white rounded-xl shadow-lg shadow-orange-500/20 ring-1 ring-orange-500/20">
+                                        <img src={`https://promptpay.io/0812345678/${amount}.png`} alt="TrueMoney QR" className="w-48 h-48 mix-blend-multiply" />
+                                    </div>
+
+                                    <div className="flex items-center gap-2 text-orange-400 bg-orange-500/10 px-4 py-2 rounded-lg border border-orange-500/20">
+                                        <svg className="w-4 h-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                        <span className="font-mono font-medium">{formatTime(timeLeft)}</span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Test Mode Note */}
+                            <div className="mt-auto pt-6 text-center">
+                                <p className="text-xs text-gray-500">
+                                    <span className="text-gray-400 font-medium">Test Mode:</span> ยอดเงินจะเข้าทันทีหลังยืนยัน
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            )}
-        </>
+                <br />
+                {/* Footer */}
+                <div className="p-8 pt-0 z-10 shrink-0 bg-transparent mt-2">
+                    <button
+                        onClick={step === 'confirm' ? handleTopUp : handleNextStep}
+                        disabled={isSubmitting || (step === 'amount' && !amount) || (step === 'method' && !selectedMethod)}
+                        className={`w-full h-11 rounded-xl font-semibold text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 group shadow-md
+                            ${step === 'confirm'
+                                ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white shadow-emerald-600/20 hover:shadow-emerald-600/30'
+                                : 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-indigo-600/20 hover:shadow-indigo-600/30'}
+                            ${(isSubmitting || (step === 'amount' && !amount) || (step === 'method' && !selectedMethod)) ? 'opacity-50 cursor-not-allowed transform-none hover:transform-none shadow-none bg-none bg-white/5 text-white/20 border border-white/5' : 'hover:scale-[1.02] active:scale-[0.98]'}
+                        `}
+                    >
+                        {isSubmitting ? (
+                            <>
+                                <svg className="animate-spin -ml-1 mr-2 h-5 w-5 opacity-70" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                กำลังดำเนินการ...
+                            </>
+                        ) : (
+                            step === 'confirm' ? 'ยืนยันการทำรายการ' : 'ดำเนินการต่อ'
+                        )}
+                    </button>
+                </div>
+
+            </div>
+
+            <AlertModal isOpen={alert.show} onClose={() => setAlert({ ...alert, show: false })} title={alert.type === 'success' ? 'สำเร็จ' : 'แจ้งเตือน'} message={alert.message} type={alert.type} />
+            <LoadingModal isOpen={isSubmitting} message="กำลังดำเนินการ..." />
+        </div >
     );
+
 }
+
+// Reuse styles from global.css or add specific ones here if needed
+// but mostly using Tailwind classes for glassmorphism

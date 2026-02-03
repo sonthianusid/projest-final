@@ -1,0 +1,2 @@
+ALTER TABLE users
+ADD COLUMN credit_balance DECIMAL(10, 2) DEFAULT 0.00 AFTER role;

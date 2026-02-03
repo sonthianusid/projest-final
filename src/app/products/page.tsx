@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import ScrollReveal from '@/components/ScrollReveal';
 
 interface Product {
@@ -31,25 +32,59 @@ export default function ProductsPage() {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [selectedBrand, setSelectedBrand] = useState('all');
     const [sortBy, setSortBy] = useState('newest'); // default to newest
-    const { addToCart } = useCart();
+    const { user, isAuthenticated } = useAuth();
     const [favorites, setFavorites] = useState<number[]>([]);
 
     useEffect(() => {
+        // 1. Initial Load from localStorage
         const saved = localStorage.getItem('favorites');
         if (saved) {
             setFavorites(JSON.parse(saved));
         }
-    }, []);
 
-    const toggleFavorite = (e: React.MouseEvent, id: number) => {
+        // 2. If logged in, sync from DB
+        if (isAuthenticated && user?.id) {
+            fetchUserFavorites();
+        }
+    }, [user, isAuthenticated]);
+
+    const fetchUserFavorites = async () => {
+        try {
+            const res = await fetch(`/api/favorites?userId=${user?.id}`);
+            const data = await res.json();
+            if (data.success) {
+                setFavorites(data.favorites);
+                // Also update localStorage to keep them in sync
+                localStorage.setItem('favorites', JSON.stringify(data.favorites));
+            }
+        } catch (error) {
+            console.error('Failed to fetch favorites from DB');
+        }
+    };
+
+    const toggleFavorite = async (e: React.MouseEvent, id: number) => {
         e.preventDefault();
         e.stopPropagation();
 
-        const newFavorites = favorites.includes(id)
+        const isCurrentlyFav = favorites.includes(id);
+        const newFavorites = isCurrentlyFav
             ? favorites.filter(fid => fid !== id)
             : [...favorites, id];
+
         setFavorites(newFavorites);
         localStorage.setItem('favorites', JSON.stringify(newFavorites));
+
+        if (isAuthenticated && user?.id) {
+            try {
+                await fetch('/api/favorites', {
+                    method: isCurrentlyFav ? 'DELETE' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.id, productId: id })
+                });
+            } catch (error) {
+                console.error('Failed to sync favorite with DB');
+            }
+        }
     };
 
     // Fetch products from API
@@ -154,36 +189,85 @@ export default function ProductsPage() {
                         </div>
                         <div className="flex items-center gap-3 flex-wrap">
                             {/* Sort Dropdown */}
-                            <select
-                                value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
-                                className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-[#667eea]/50 cursor-pointer"
-                            >
-                                <option value="newest" className="bg-[#1a1a2e]">มาใหม่</option>
-                                <option value="favorites" className="bg-[#1a1a2e]">รายการโปรด</option>
-                                <option value="price_asc" className="bg-[#1a1a2e]">ราคาต่ำ - สูง</option>
-                                <option value="price_desc" className="bg-[#1a1a2e]">ราคาสูง - ต่ำ</option>
-                                <option value="discount" className="bg-[#1a1a2e]">ส่วนลดมากสุด</option>
-                            </select>
-                            <select
-                                value={selectedCategory}
-                                onChange={(e) => setSelectedCategory(e.target.value)}
-                                className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-[#667eea]/50 cursor-pointer"
-                            >
-                                {categories.map((cat) => (
-                                    <option key={cat.key} value={cat.key} className="bg-[#1a1a2e]">{cat.label}</option>
-                                ))}
-                            </select>
+                            {/* Sort Dropdown */}
+                            <div className="relative group/select">
+                                <select
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                    className="appearance-none text-white text-sm font-bold outline-none transition-all cursor-pointer min-w-[140px] text-left"
+                                    style={{
+                                        appearance: 'none',
+                                        WebkitAppearance: 'none',
+                                        MozAppearance: 'none',
+                                        backgroundColor: 'transparent',
+                                        border: 'none',
+                                        borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+                                        borderRadius: '0',
+                                        padding: '8px 32px 8px 8px',
+                                        backgroundImage: 'none'
+                                    }}
+                                >
+                                    <option value="newest" className="bg-[#1a1a2e]">มาใหม่</option>
+                                    <option value="favorites" className="bg-[#1a1a2e]">รายการโปรด</option>
+                                    <option value="price_asc" className="bg-[#1a1a2e]">ราคาต่ำ - สูง</option>
+                                    <option value="price_desc" className="bg-[#1a1a2e]">ราคาสูง - ต่ำ</option>
+                                    <option value="discount" className="bg-[#1a1a2e]">ส่วนลดมากสุด</option>
+                                </select>
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-white group-hover/select:text-[#667eea] transition-colors">
+                                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                </div>
+                            </div>
+                            <div className="relative group/select">
+                                <select
+                                    value={selectedCategory}
+                                    onChange={(e) => setSelectedCategory(e.target.value)}
+                                    className="appearance-none text-white text-sm font-bold outline-none transition-all cursor-pointer min-w-[140px] text-left"
+                                    style={{
+                                        appearance: 'none',
+                                        WebkitAppearance: 'none',
+                                        MozAppearance: 'none',
+                                        backgroundColor: 'transparent',
+                                        border: 'none',
+                                        borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+                                        borderRadius: '0',
+                                        padding: '8px 32px 8px 8px',
+                                        backgroundImage: 'none'
+                                    }}
+                                >
+                                    {categories.map((cat) => (
+                                        <option key={cat.key} value={cat.key} className="bg-[#1a1a2e]">{cat.label}</option>
+                                    ))}
+                                </select>
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-white group-hover/select:text-[#667eea] transition-colors">
+                                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                </div>
+                            </div>
 
-                            <select
-                                value={selectedBrand}
-                                onChange={(e) => setSelectedBrand(e.target.value)}
-                                className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-[#667eea]/50 cursor-pointer"
-                            >
-                                <option value="all" className="bg-[#1a1a2e]">แบรนด์ทั้งหมด</option>
-                                <option value="nike" className="bg-[#1a1a2e]">Nike</option>
-                                <option value="adidas" className="bg-[#1a1a2e]">Adidas</option>
-                            </select>
+                            <div className="relative group/select">
+                                <select
+                                    value={selectedBrand}
+                                    onChange={(e) => setSelectedBrand(e.target.value)}
+                                    className="appearance-none text-white text-sm font-bold outline-none transition-all cursor-pointer min-w-[140px] text-left"
+                                    style={{
+                                        appearance: 'none',
+                                        WebkitAppearance: 'none',
+                                        MozAppearance: 'none',
+                                        backgroundColor: 'transparent',
+                                        border: 'none',
+                                        borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+                                        borderRadius: '0',
+                                        padding: '8px 32px 8px 8px',
+                                        backgroundImage: 'none'
+                                    }}
+                                >
+                                    <option value="all" className="bg-[#1a1a2e]">แบรนด์ทั้งหมด</option>
+                                    <option value="nike" className="bg-[#1a1a2e]">Nike</option>
+                                    <option value="adidas" className="bg-[#1a1a2e]">Adidas</option>
+                                </select>
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-white group-hover/select:text-[#667eea] transition-colors">
+                                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -230,7 +314,7 @@ export default function ProductsPage() {
                                                 <span className={`badge ${product.brand === 'nike' ? 'badge-nike' : 'badge-adidas'}`}>
                                                     {product.brand?.toUpperCase() || 'BRAND'}
                                                 </span>
-                                                {(product.is_new as any) === 1 && <span className="badge bg-green-500 text-white">NEW</span>}
+                                                {(product.is_new as any) === 1 && <span className="badge bg-green-500 text-white">ใหม่</span>}
                                                 {product.original_price && product.original_price > product.price && (
                                                     <span className="badge bg-red-500 text-white">
                                                         -{Math.round((1 - product.price / product.original_price) * 100)}%

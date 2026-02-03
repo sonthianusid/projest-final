@@ -151,9 +151,11 @@ export default function AdminOrders() {
                                 </tbody>
                             </table>
                         </div>
+                        
                     </div>
                 )}
             </div>
+            
         </div>
     );
 }

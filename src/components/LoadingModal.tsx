@@ -13,9 +13,14 @@ export default function LoadingModal({ isOpen, message }: LoadingModalProps) {
     useEffect(() => {
         if (isOpen) {
             setIsVisible(true);
+            document.body.style.overflow = 'hidden';
         } else {
             setTimeout(() => setIsVisible(false), 300);
+            document.body.style.overflow = 'unset';
         }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
     }, [isOpen]);
 
     if (!isVisible && !isOpen) return null;
@@ -26,7 +31,7 @@ export default function LoadingModal({ isOpen, message }: LoadingModalProps) {
             <div className="absolute inset-0 backdrop-blur-md bg-black/40"></div>
 
             {/* Modal: ปรับ min-h เป็น 300px */}
-            <div className={`relative bg-[#0a0a0a]/90 backdrop-blur-xl border border-white/10 rounded-[32px] p-8 shadow-[0_0_60px_rgba(102,126,234,0.2)] w-full max-w-[410px] min-h-[250px] flex flex-col items-center justify-center mx-4 transform transition-all duration-500 ${isOpen ? 'scale-100 translate-y-0' : 'scale-90 translate-y-4'}`}>
+            <div className={`relative bg-[#0a0a0a]/90 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 shadow-[0_0_60px_rgba(102,126,234,0.2)] w-full max-w-[410px] min-h-[250px] flex flex-col items-center justify-center mx-4 transform transition-all duration-500 ${isOpen ? 'scale-100 translate-y-0' : 'scale-90 translate-y-4'}`}>
 
                 <div className="flex flex-col items-center justify-center w-full">
                     {/* Custom Loader Animation */}
@@ -34,7 +39,7 @@ export default function LoadingModal({ isOpen, message }: LoadingModalProps) {
                         <div className="absolute inset-0 border-[4px] border-t-[#667eea] border-r-transparent border-b-[#764ba2] border-l-transparent rounded-full animate-spin"></div>
                         <div className="absolute inset-3 border-[4px] border-r-[#667eea] border-b-transparent border-l-[#764ba2] border-t-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '2s' }}></div>
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-12 h-12 bg-gradient-to-br from-[#667eea] to-[#764ba2] rounded-full flex items-center justify-center shadow-lg shadow-purple-500/40 animate-pulse">
+                            <div className="w-12 h-12 bg-gradient-to-br from-[#667eea] to-[#764ba2] rounded-3xl flex items-center justify-center shadow-lg shadow-purple-500/40 animate-pulse">
                                 <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>

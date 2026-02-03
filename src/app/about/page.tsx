@@ -4,274 +4,172 @@ import React from 'react';
 
 export default function AboutPage() {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#161622] to-[#0a0a0f] pt-24 pb-20 px-4 relative overflow-hidden">
-            <div className="h-[68px]"></div>
-
-            {/* Background Effects */}
-            <div className="fixed inset-0 pointer-events-none opacity-30">
-                <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-purple-600/20 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '5s' }} />
-                <div className="absolute bottom-[20%] right-[10%] w-[350px] h-[350px] bg-pink-600/20 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
+        <div className="min-h-screen bg-[#0a0a0f] pt-32 pb-20 px-4 relative overflow-hidden font-sans">
+            {/* Subtle Background Effects */}
+            <div className="fixed inset-0 pointer-events-none">
+                <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-900/10 rounded-full blur-[120px]" />
+                <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[120px]" />
             </div>
-
-            <div className="container mx-auto max-w-6xl relative z-10">
+            <br />
+            <br />
+            <br />
+            <br />
+            <div className="container mx-auto max-w-5xl relative z-10">
                 {/* Header */}
-                <div className="text-center mb-16">
-                    <h1 className="text-5xl md:text-6xl font-extrabold text-white tracking-tight mb-4">
-                        เกี่ยวกับ<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#667eea] via-[#764ba2] to-[#c084fc]">เรา</span>
+                <div className="text-center mb-20">
+                    <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-6">
+                        ผู้จัดทำ<span className="text-indigo-500">โครงงาน</span>
                     </h1>
-                    <p className="text-gray-400 text-base max-w-2xl mx-auto">
-                        พัฒนาโดยนักศึกษาสาขาเทคโนโลยีสารสนเทศ วิทยาลัยเทคนิคสุพรรณบุรี
-                    </p>
+                    <br />
                 </div>
 
-                {/* Profile Card */}
-                <div className="mb-10">
-                    <div className="bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[28px] p-8 md:p-10 hover:border-purple-500/20 transition-all duration-500 hover:shadow-[0_0_60px_-20px_rgba(139,92,246,0.3)]">
-                        <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+                {/* Main Profile Section */}
+                <div className="mb-24">
+                    <div className="relative bg-[#12121a] border border-white/5 rounded-2xl p-8 md:p-12 overflow-hidden group hover:border-indigo-500/30 transition-all duration-500 shadow-2xl shadow-black/50">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 blur-[80px] rounded-full group-hover:bg-indigo-500/20 transition-all duration-500" />
+
+                        <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
                             {/* Profile Image */}
-                            <div className="relative shrink-0">
-                                <div className="absolute -inset-2 bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-500 rounded-full opacity-50 blur-lg animate-pulse" style={{ animationDuration: '3s' }}></div>
-                                <div className="relative w-32 h-32 rounded-full border-3 border-[#1a1a2e] overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 shadow-2xl">
+                            <br />
+                            <div className="shrink-0 relative">
+                                <div className="absolute inset-0 bg-indigo-500/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                <div className="relative w-48 h-48 rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
                                     <img
                                         src="/images/profile-placeholder.jpg"
                                         alt="Profile"
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
                                         onError={(e) => {
-                                            e.currentTarget.src = 'https://ui-avatars.com/api/?name=Thanakrit+R&background=a855f7&color=fff&size=256&bold=true';
+                                            e.currentTarget.src = 'https://ui-avatars.com/api/?name=Thanakrit+R&background=0F0F13&color=fff&size=512&bold=true';
                                         }}
                                     />
                                 </div>
                             </div>
 
-                            {/* Profile Info */}
-                            <div className="flex-1 text-center md:text-left space-y-5">
-                                <div>
-                                    <p className="text-gray-500 text-xs uppercase tracking-widest mb-1">ชื่อ-นามสกุล</p>
-                                    <p className="text-2xl text-white font-bold">นายธนกฤต ระโหฐาน</p>
-                                    <p className="text-sm text-gray-400 mt-1">Mr. Thanakrit Rahothan</p>
+                            {/* Info */}
+                            <div className="flex-1 text-center md:text-left">
+                                <div className="mb-8">
+                                    <br />
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium mb-3">
+                                        <span className="relative flex h-2 w-2">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                                        </span>
+                                        Project Creator
+                                    </div>
+                                    <h2 className="text-4xl font-bold text-white mb-2">นายสนธิ อนุสิทธิ์</h2>
+                                    <p className="text-gray-400 font-medium text-lg tracking-wide">นักศึกษาสาขาเทคโนโลยีสารสนเทศ</p>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-x-8 gap-y-4 pt-2">
-                                    <div className="bg-white/5 rounded-xl p-4 border border-white/5">
-                                        <p className="text-gray-500 text-xs uppercase mb-1">สถาบันการศึกษา</p>
-                                        <p className="text-white/90 text-sm font-medium">วิทยาลัยเทคนิคสุพรรณบุรี</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="px-0 py-2 group/item border-b border-white/10 hover:border-indigo-500/50 transition-colors">
+                                        <p className="text-gray-500 text-xs uppercase tracking-wider mb-1 group-hover/item:text-indigo-400 transition-colors">รหัสนักศึกษา</p>
+                                        <p className="text-white font-mono text-lg">68319010014</p>
                                     </div>
-                                    <div className="bg-white/5 rounded-xl p-4 border border-white/5">
-                                        <p className="text-gray-500 text-xs uppercase mb-1">สาขา</p>
-                                        <p className="text-white/90 text-sm font-medium">เทคโนโลยีสารสนเทศ</p>
+                                    <div className="px-0 py-2 group/item border-b border-white/10 hover:border-indigo-500/50 transition-colors">
+                                        <p className="text-gray-500 text-xs uppercase tracking-wider mb-1 group-hover/item:text-indigo-400 transition-colors">ระดับชั้น</p>
+                                        <p className="text-white text-lg">ปวส. 1/2</p>
                                     </div>
-                                    <div className="bg-white/5 rounded-xl p-4 border border-white/5">
-                                        <p className="text-gray-500 text-xs uppercase mb-1">รหัสนักศึกษา</p>
-                                        <p className="text-white/90 text-sm font-mono font-medium">68319010017</p>
-                                    </div>
-                                    <div className="bg-white/5 rounded-xl p-4 border border-white/5">
-                                        <p className="text-gray-500 text-xs uppercase mb-1">บทบาท</p>
-                                        <p className="text-transparent bg-clip-text bg-gradient-to-r from-[#667eea] to-[#764ba2] text-sm font-bold">Full-Stack Developer</p>
+                                    <div className="col-span-1 md:col-span-2 px-0 py-2 group/item border-b border-white/10 hover:border-indigo-500/50 transition-colors">
+                                        <p className="text-gray-500 text-xs uppercase tracking-wider mb-1 group-hover/item:text-indigo-400 transition-colors">สถาบันการศึกษา</p>
+                                        <p className="text-white text-lg">วิทยาลัยเทคนิคสุพรรณบุรี</p>
                                     </div>
                                 </div>
+                                <br />
                             </div>
+                            <br />
                         </div>
                     </div>
+                    <br />
                 </div>
 
-                {/* Vision & Mission Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                    {/* Vision */}
-                    <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[24px] p-8 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_40px_-15px_rgba(139,92,246,0.4)] hover:scale-[1.02]">
-                        <div className="flex items-start gap-6">
-                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-600/10 flex items-center justify-center shrink-0 border border-purple-500/20 group-hover:scale-110 transition-transform duration-300">
-                                <svg className="w-7 h-7 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 className="text-xl font-bold text-white mb-3">วิสัยทัศน์</h3>
-                                <p className="text-gray-400 text-sm leading-relaxed">
-                                    มุ่งมั่นพัฒนาระบบอีคอมเมิร์ซที่ทันสมัย ใช้งานง่าย และตอบโจทย์ความต้องการของผู้ใช้งานในยุคดิจิทัล ด้วยเทคโนโลยีที่ล้ำสมัยและประสบการณ์ผู้ใช้ที่ยอดเยี่ยม
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Mission */}
-                    <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[24px] p-8 hover:border-pink-500/40 transition-all duration-300 hover:shadow-[0_0_40px_-15px_rgba(236,72,153,0.4)] hover:scale-[1.02]">
-                        <div className="flex items-start gap-6">
-                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500/20 to-pink-600/10 flex items-center justify-center shrink-0 border border-pink-500/20 group-hover:scale-110 transition-transform duration-300">
-                                <svg className="w-7 h-7 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 className="text-xl font-bold text-white mb-3">พันธกิจ</h3>
-                                <p className="text-gray-400 text-sm leading-relaxed">
-                                    สร้างสรรค์แพลตฟอร์มการช้อปปิ้งออนไลน์ที่มีประสิทธิภาพ ปลอดภัย และเข้าถึงได้ง่าย พร้อมนำเสนอประสบการณ์การซื้อสินค้าที่น่าประทับใจให้กับทุกคน
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Core Values */}
-                <div className="mb-12">
-                    <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center border border-indigo-500/20">
-                            <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                {/* Project Details (Objectives & Scope) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+                    {/* Objectives */}
+                    <div className="group p-10 rounded-2xl bg-[#12121a] border border-white/5 hover:border-indigo-500/30 transition-all duration-500 hover:-translate-y-1 shadow-lg hover:shadow-indigo-500/10">
+                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white mb-8 shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform duration-500">
+                            <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                             </svg>
                         </div>
-                        ค่านิยมของเรา
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {/* Quality */}
-                        <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[20px] p-7 hover:border-blue-500/40 transition-all duration-300 hover:shadow-[0_0_30px_-12px_rgba(59,130,246,0.4)] hover:scale-[1.02]">
-                            <div className="flex items-center gap-5 mb-4">
-                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center border border-blue-500/20 group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <h4 className="text-white text-base font-bold">คุณภาพ (Quality)</h4>
-                            </div>
-                            <p className="text-gray-400 text-sm leading-relaxed pl-16">มุ่งเน้นคุณภาพในทุกรายละเอียด</p>
-                        </div>
-
-                        {/* Innovation */}
-                        <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[20px] p-7 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_30px_-12px_rgba(139,92,246,0.4)] hover:scale-[1.02]">
-                            <div className="flex items-center gap-5 mb-4">
-                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/10 flex items-center justify-center border border-purple-500/20 group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                                    </svg>
-                                </div>
-                                <h4 className="text-white text-base font-bold">นวัตกรรม (Innovation)</h4>
-                            </div>
-                            <p className="text-gray-400 text-sm leading-relaxed pl-16">สร้างสรรค์สิ่งใหม่ด้วยเทคโนโลยี</p>
-                        </div>
-
-                        {/* Responsibility */}
-                        <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[20px] p-7 hover:border-emerald-500/40 transition-all duration-300 hover:shadow-[0_0_30px_-12px_rgba(16,185,129,0.4)] hover:scale-[1.02]">
-                            <div className="flex items-center gap-5 mb-4">
-                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                    </svg>
-                                </div>
-                                <h4 className="text-white text-base font-bold">ความรับผิดชอบ</h4>
-                            </div>
-                            <p className="text-gray-400 text-sm leading-relaxed pl-16">ซื่อสัตย์ รับผิดชอบในทุกงาน</p>
-                        </div>
+                        <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-indigo-400 transition-colors">วัตถุประสงค์ (Objectives)</h3>
+                        <ul className="space-y-3 text-gray-400 group-hover:text-gray-300 transition-colors list-disc list-inside leading-relaxed">
+                            <li>เพื่อพัฒนาระบบร้านค้าออนไลน์ที่มีประสิทธิภาพ</li>
+                            <li>เพื่อศึกษาและประยุกต์ใช้เทคโนโลยี Next.js และ Database</li>
+                            <li>เพื่อลดขั้นตอนการทำงานและเพิ่มความสะดวกในการซื้อขาย</li>
+                        </ul>
                     </div>
-                </div>
 
-                {/* Skills & Technologies */}
-                <div className="mb-8">
-                    <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center border border-cyan-500/20">
-                            <svg className="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    {/* Scope / Advisor */}
+                    <div className="group p-10 rounded-2xl bg-[#12121a] border border-white/5 hover:border-indigo-500/30 transition-all duration-500 hover:-translate-y-1 shadow-lg hover:shadow-indigo-500/10">
+                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white mb-8 shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform duration-500">
+                            <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </div>
-                        ทักษะและเทคโนโลยี
-                    </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                        {/* React.js */}
-                        <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[20px] p-6 hover:border-cyan-500/40 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_-12px_rgba(6,182,212,0.4)]">
-                            <div className="flex flex-col items-center text-center gap-4">
-                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-600/10 flex items-center justify-center border border-cyan-500/20 group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-7 h-7 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                                    </svg>
-                                </div>
-                                <p className="text-white text-sm font-semibold">React.js</p>
-                            </div>
-                        </div>
-
-                        {/* Next.js */}
-                        <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[20px] p-6 hover:border-gray-400/40 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_-12px_rgba(156,163,175,0.4)]">
-                            <div className="flex flex-col items-center text-center gap-4">
-                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-500/20 to-gray-600/10 flex items-center justify-center border border-gray-500/20 group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-7 h-7 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                    </svg>
-                                </div>
-                                <p className="text-white text-sm font-semibold">Next.js</p>
-                            </div>
-                        </div>
-
-                        {/* TypeScript */}
-                        <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[20px] p-6 hover:border-blue-500/40 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_-12px_rgba(59,130,246,0.4)]">
-                            <div className="flex flex-col items-center text-center gap-4">
-                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center border border-blue-500/20 group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-7 h-7 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                </div>
-                                <p className="text-white text-sm font-semibold">TypeScript</p>
-                            </div>
-                        </div>
-
-                        {/* Tailwind CSS */}
-                        <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[20px] p-6 hover:border-teal-500/40 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_-12px_rgba(20,184,166,0.4)]">
-                            <div className="flex flex-col items-center text-center gap-4">
-                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500/20 to-teal-600/10 flex items-center justify-center border border-teal-500/20 group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-7 h-7 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                                    </svg>
-                                </div>
-                                <p className="text-white text-sm font-semibold">Tailwind CSS</p>
-                            </div>
-                        </div>
-
-                        {/* Node.js */}
-                        <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[20px] p-6 hover:border-green-500/40 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_-12px_rgba(34,197,94,0.4)]">
-                            <div className="flex flex-col items-center text-center gap-4">
-                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-600/10 flex items-center justify-center border border-green-500/20 group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                                    </svg>
-                                </div>
-                                <p className="text-white text-sm font-semibold">Node.js</p>
-                            </div>
-                        </div>
-
-                        {/* Database */}
-                        <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[20px] p-6 hover:border-orange-500/40 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_-12px_rgba(249,115,22,0.4)]">
-                            <div className="flex flex-col items-center text-center gap-4">
-                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-600/10 flex items-center justify-center border border-orange-500/20 group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-7 h-7 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
-                                    </svg>
-                                </div>
-                                <p className="text-white text-sm font-semibold">Database</p>
-                            </div>
-                        </div>
-
-                        {/* Git Control */}
-                        <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[20px] p-6 hover:border-red-500/40 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_-12px_rgba(239,68,68,0.4)]">
-                            <div className="flex flex-col items-center text-center gap-4">
-                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500/20 to-red-600/10 flex items-center justify-center border border-red-500/20 group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-7 h-7 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                </div>
-                                <p className="text-white text-sm font-semibold">Git Control</p>
-                            </div>
-                        </div>
-
-                        {/* UX/UI Design */}
-                        <div className="group bg-[#12121a]/80 backdrop-blur-xl border border-white/10 rounded-[20px] p-6 hover:border-pink-500/40 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_-12px_rgba(236,72,153,0.4)]">
-                            <div className="flex flex-col items-center text-center gap-4">
-                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500/20 to-pink-600/10 flex items-center justify-center border border-pink-500/20 group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-7 h-7 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                                    </svg>
-                                </div>
-                                <p className="text-white text-sm font-semibold">UX/UI Design</p>
-                            </div>
-                        </div>
+                        <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-indigo-400 transition-colors">อาจารย์ที่ปรึกษา</h3>
+                        <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors mb-2">
+                            โครงการนี้ได้รับคำแนะนำและตรวจสอบโดย
+                        </p>
+                        <p className="text-xl font-bold text-white">ชื่ออาจารย์ที่ปรึกษา</p>
+                        <p className="text-indigo-400 text-sm mt-1">ตำแหน่ง / สาขาวิชา</p>
                     </div>
                 </div>
+
+                {/* Tech Stack used in Project */}
+                <div>
+                    <br />
+                    <br />
+                    <div className="flex items-center justify-between mb-12">
+                        <h3 className="text-2xl font-bold text-white">เครื่องมือที่ใช้ในการพัฒนา</h3>
+                        <div className="h-px flex-1 bg-gradient-to-r from-indigo-500/50 to-transparent ml-8" />
+                    </div>
+                    <br />
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+                        {[
+                            {
+                                name: 'React',
+                                icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2v-2zm0-2h2V7h-2v7z" /></svg>
+                            },
+                            {
+                                name: 'Next.js',
+                                icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 19h20L12 2zm0 3.8L17.6 17H6.4L12 5.8z" /></svg>
+                            },
+                            {
+                                name: 'TypeScript',
+                                icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h4v14H3V5zm6 0h12v2H9V5zm0 4h12v2H9V9zm0 4h8v2H9v-2zm0 4h12v2H9v-2z" /></svg>
+                            },
+                            {
+                                name: 'Tailwind',
+                                icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" /></svg>
+                            },
+                            {
+                                name: 'Node.js',
+                                icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z" /></svg>
+                            },
+                            {
+                                name: 'MySQL',
+                                icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" /></svg>
+                            },
+                            {
+                                name: 'Git',
+                                icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 4c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1h12v1zm0-3H6v-1h12v1z" /></svg>
+                            },
+                            {
+                                name: 'VS Code',
+                                icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.39z" /></svg>
+                            },
+                        ].map((skill, idx) => (
+                            <div key={idx} className="aspect-square rounded-xl bg-[#12121a] border border-white/5 flex flex-col items-center justify-center gap-3 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all duration-300 cursor-default group shadow-lg hover:shadow-indigo-500/10">
+                                <div className="text-gray-500 group-hover:text-indigo-400 transition-colors duration-300 transform group-hover:scale-110">
+                                    {skill.icon}
+                                </div>
+                                <span className="text-sm font-medium text-gray-400 group-hover:text-white transition-colors">{skill.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <br />
+                <br />
             </div>
         </div>
     );

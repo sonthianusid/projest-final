@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # 1. ฐานข้อมูล MariaDB
+  mariadb:
+    image: mariadb:latest
+    container_name: sonthishop-db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: sonthishop
+      MYSQL_USER: sonthiuser
+      MYSQL_PASSWORD: sonthipass
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  # 2. เว็บ Next.js
+  web:
+    build: .
+    container_name: nextjs-web
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mariadb
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=root123
+      - DB_NAME=sonthishop
+    # --- ส่วนสำคัญสำหรับ Hot Reload ---
+    volumes:
+      - .:/app                 # เชื่อมโฟลเดอร์เครื่องเรา เข้ากับ Docker
+      - /app/node_modules      # ยกเว้นโฟลเดอร์นี้ (ให้ใช้ของใน Docker)
+      - /app/.next             # ยกเว้นโฟลเดอร์นี้ (ป้องกันไฟล์ตีกัน)
+
+  # 3. Adminer (ตัวจัดการ Database)
+  adminer:
+    image: adminer
+    container_name: sonthishop-adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+
+volumes:
+  mariadb_data:

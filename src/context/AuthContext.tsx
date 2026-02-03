@@ -21,12 +21,13 @@ interface AuthContextType {
     register: (userData: User) => Promise<boolean>;
     updateProfile?: (profileData: Partial<Omit<User, 'username' | 'password' | 'role'>>) => Promise<boolean>;
     logout: () => void;
+    refreshUser: () => Promise<void>;
     isAuthenticated: boolean;
     isAdmin: boolean;
     loading: boolean;
     wallet: {
         balance: number;
-        topUp: (amount: number) => void;
+        topUp: (amount: number) => Promise<boolean>;
         deduct: (amount: number) => Promise<boolean>;
     };
 }
@@ -148,19 +149,85 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const wallet = {
         balance: user?.creditBalance || 0,
-        topUp: (amount: number) => {
-            if (!user) return;
-            const newBalance = (user.creditBalance || 0) + amount;
-            updateProfile({ creditBalance: newBalance });
+        topUp: async (amount: number): Promise<boolean> => {
+            if (!user?.id) return false;
+            try {
+                const res = await fetch('/api/wallet/topup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.id, amount })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const updatedUser = { ...user, creditBalance: Number(data.newBalance) };
+                    setUser(updatedUser);
+                    localStorage.setItem('user', JSON.stringify(updatedUser));
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('Topup failed:', error);
+                return false;
+            }
         },
         deduct: async (amount: number): Promise<boolean> => {
-            if (!user) return false;
+            if (!user?.id) return false;
             const currentBalance = user.creditBalance || 0;
             if (currentBalance < amount) return false;
 
-            const newBalance = currentBalance - amount;
-            await updateProfile({ creditBalance: newBalance });
-            return true;
+            // For deduct, we also need a secure API ideally. 
+            // Reuse topup with negative amount? Or create deduct endpoint? 
+            // Topup API increments. Passing negative amount might work if validation allows.
+            // My API check: if (!userId || !amount || amount <= 0) -> rejects negative.
+
+            // So for now, I will create a deduct endpoint or modify topup to allow negative?
+            // "Wallet" usually implies topup. Deduct happens on purchase.
+            // Let's create a quick /api/wallet/deduct or just use correct logic.
+            // But for now, user asked for "remember credit". 
+            // If I fix topup, balance increases persist.
+            // If I buy something, balance decrease must persist.
+            // I should fix deduct too.
+
+            try {
+                // Temporary: use topup API with negative support? No, make new endpoint or client-side temporarily?
+                // If I leave client-side only for deduct, it will revert on refresh which is bad.
+                // I will add a deduct endpoint quickly.
+
+                const res = await fetch('/api/wallet/deduct', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.id, amount })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const updatedUser = { ...user, creditBalance: Number(data.newBalance) };
+                    setUser(updatedUser);
+                    localStorage.setItem('user', JSON.stringify(updatedUser));
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                return false;
+            }
+        }
+    };
+
+    const refreshUser = async () => {
+        if (!user?.id) return;
+        try {
+            const res = await fetch(`/api/users/${user.id}`);
+            const data = await res.json();
+            if (data.success) {
+                const refreshedUser = { ...user, ...data.user };
+                // Ensure credit_balance from DB is mapped to creditBalance for frontend
+                if (data.user.credit_balance !== undefined) {
+                    refreshedUser.creditBalance = Number(data.user.credit_balance);
+                }
+                setUser(refreshedUser);
+                localStorage.setItem('user', JSON.stringify(refreshedUser));
+            }
+        } catch (error) {
+            console.error('Failed to refresh user:', error);
         }
     };
 
@@ -171,6 +238,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             register,
             updateProfile,
             logout,
+            refreshUser,
             isAuthenticated: !!user,
             isAdmin,
             loading,

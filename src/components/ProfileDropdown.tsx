@@ -12,6 +12,28 @@ export default function ProfileDropdown() {
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    // Fetch unread count
+    useEffect(() => {
+        if (user) {
+            const fetchUnreadCount = () => {
+                fetch(`/api/notifications?userId=${user.id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            setUnreadCount(data.unreadCount);
+                        }
+                    })
+                    .catch(console.error);
+            };
+
+            fetchUnreadCount();
+            // Poll every 5 seconds for near real-time updates
+            const interval = setInterval(fetchUnreadCount, 5000);
+            return () => clearInterval(interval);
+        }
+    }, [user]); // Removed isOpen dependency to prevent resetting interval unnecessarily
 
     // ปิด Dropdown เมื่อคลิกข้างนอก
     useEffect(() => {
@@ -38,7 +60,7 @@ export default function ProfileDropdown() {
                         {user.name}
                     </span>
                     <span className={`text-[10px] font-medium tracking-wide uppercase ${isAdmin ? 'text-amber-400' : 'text-gray-500'}`}>
-                        {isAdmin ? 'Administrator' : 'Member'}
+                        {isAdmin ? 'ผู้ดูแลระบบ' : 'สมาชิก'}
                     </span>
                 </div>
 
@@ -51,6 +73,11 @@ export default function ProfileDropdown() {
                             {user.name.charAt(0).toUpperCase()}
                         </span>
                     </div>
+
+                    {/* Notification Dot (Trigger) */}
+                    {unreadCount > 0 && (
+                        <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-[#1a1a2e] rounded-full shadow-sm animate-pulse z-10"></div>
+                    )}
                 </div>
             </button>
 
@@ -126,14 +153,21 @@ export default function ProfileDropdown() {
                         <Link
                             href="/notifications"
                             onClick={() => setIsOpen(false)}
-                            className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-all group mb-2"
+                            className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-all group mb-2 justify-between"
                         >
-                            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 text-gray-400 group-hover:text-white group-hover:bg-[#667eea]/20 group-hover:scale-110 transition-all">
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                                </svg>
-                            </span>
-                            <span className="font-medium group-hover:translate-x-1 transition-transform">การแจ้งเตือน</span>
+                            <div className="flex items-center gap-4">
+                                <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 text-gray-400 group-hover:text-white group-hover:bg-[#667eea]/20 group-hover:scale-110 transition-all">
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                    </svg>
+                                </span>
+                                <span className="font-medium group-hover:translate-x-1 transition-transform">การแจ้งเตือน</span>
+                            </div>
+                            {unreadCount > 0 && (
+                                <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-[10px] font-bold text-white shadow-lg animate-pulse">
+                                    {unreadCount > 99 ? '99+' : unreadCount}
+                                </span>
+                            )}
                         </Link>
 
                         <button className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-all group mb-1">

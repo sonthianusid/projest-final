@@ -125,93 +125,133 @@ export default function AddressForm({ onAddressChange, initialAddress }: Address
         }
     }, [detail, province, amphoe, tambon, zipcode, onAddressChange]);
 
-    if (loading) return <div className="text-gray-400 text-sm">กำลังโหลดข้อมูลที่อยู่...</div>;
+    if (loading) return <div className="text-gray-400 text-sm animate-pulse">กำลังโหลดข้อมูลที่อยู่...</div>;
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-6">
             {/* Detail: House No, Village, Road */}
             <div className="relative z-0 w-full group">
                 <input
                     type="text"
                     value={detail}
+                    id="address_detail"
                     onChange={(e) => setDetail(e.target.value)}
-                    className="w-full px-5 py-3.5 bg-black/20 border border-white/5 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-[#667eea]/50 focus:ring-4 focus:ring-[#667eea]/10 transition-all duration-300"
+                    className="block py-3 px-0 w-full text-lg text-white bg-transparent border-0 border-b border-gray-700 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-500 peer transition-colors duration-300 pr-8"
                     placeholder=" "
                 />
-                <label className="absolute text-base text-gray-400 duration-300 transform top-0 origin-[0] -z-10 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-indigo-400 scale-75 -translate-y-6">
+                <label htmlFor="address_detail" className="absolute text-base text-gray-400 duration-300 transform top-0 origin-[0] -z-10 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-indigo-400 scale-75 -translate-y-6 cursor-text">
                     บ้านเลขที่ / หมู่ / ซอย / ถนน
                 </label>
+                <div className="absolute right-0 top-0 z-10 text-gray-500 peer-focus:text-indigo-500 transition-colors duration-300 pointer-events-none">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 gap-4">
                 {/* Province */}
-                <div className="relative">
-                    <label className="text-[10px] text-gray-500 mb-1 block">จังหวัด</label>
-                    <div className="relative">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">จังหวัด</label>
+                    <div className="relative group/select">
                         <select
                             value={province}
                             onChange={(e) => setProvince(e.target.value)}
-                            className="w-full bg-black/20 text-white text-sm border border-white/5 rounded-xl px-3 focus:outline-none focus:border-[#667eea]/50 focus:ring-2 focus:ring-[#667eea]/10 appearance-none truncate h-[46px] transition-all duration-300"
-                            style={{ lineHeight: 'normal' }} // Reset line-height for select
+                            className="appearance-none text-white text-base font-bold outline-none transition-all cursor-pointer w-full text-left"
+                            style={{
+                                appearance: 'none',
+                                WebkitAppearance: 'none',
+                                MozAppearance: 'none',
+                                backgroundColor: 'transparent',
+                                border: 'none',
+                                borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+                                borderRadius: '0',
+                                padding: '12px 32px 12px 8px',
+                                backgroundImage: 'none'
+                            }}
                         >
-                            <option value="">เลือก</option>
-                            {provinces.map(p => <option key={p} value={p}>{p}</option>)}
+                            <option value="" className="bg-[#121214]">เลือกจังหวัด</option>
+                            {provinces.map(p => <option key={p} value={p} className="bg-[#121214]">{p}</option>)}
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 group-hover/select:text-indigo-400 transition-colors">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" /></svg>
                         </div>
                     </div>
                 </div>
 
                 {/* Amphoe */}
-                <div className="relative">
-                    <label className="text-[10px] text-gray-500 mb-1 block">อำเภอ</label>
-                    <div className="relative">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">อำเภอ</label>
+                    <div className="relative group/select">
                         <select
                             value={amphoe}
                             onChange={(e) => setAmphoe(e.target.value)}
                             disabled={!province}
-                            className="w-full bg-[#1a1a2e] text-white text-sm border border-gray-700 rounded-lg px-2 focus:outline-none focus:border-indigo-500 disabled:opacity-50 appearance-none truncate h-[38px] leading-[38px] py-0"
-                            style={{ lineHeight: 'normal' }}
+                            className="appearance-none text-white text-base font-bold outline-none transition-all cursor-pointer w-full text-left disabled:opacity-30 disabled:cursor-not-allowed"
+                            style={{
+                                appearance: 'none',
+                                WebkitAppearance: 'none',
+                                MozAppearance: 'none',
+                                backgroundColor: 'transparent',
+                                border: 'none',
+                                borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+                                borderRadius: '0',
+                                padding: '12px 32px 12px 8px',
+                                backgroundImage: 'none'
+                            }}
                         >
-                            <option value="">เลือก</option>
-                            {amphoes.map(ONE => <option key={ONE} value={ONE}>{ONE}</option>)}
+                            <option value="" className="bg-[#121214]">เลือกอำเภอ</option>
+                            {amphoes.map(ONE => <option key={ONE} value={ONE} className="bg-[#121214]">{ONE}</option>)}
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 group-hover/select:text-indigo-400 transition-colors">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" /></svg>
                         </div>
                     </div>
                 </div>
 
                 {/* Tambon */}
-                <div className="relative">
-                    <label className="text-[10px] text-gray-500 mb-1 block">ตำบล</label>
-                    <div className="relative">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">ตำบล</label>
+                    <div className="relative group/select">
                         <select
                             value={tambon}
                             onChange={(e) => setTambon(e.target.value)}
                             disabled={!amphoe}
-                            className="w-full bg-[#1a1a2e] text-white text-sm border border-gray-700 rounded-lg px-2 focus:outline-none focus:border-indigo-500 disabled:opacity-50 appearance-none truncate h-[38px] leading-[38px] py-0"
-                            style={{ lineHeight: 'normal' }}
+                            className="appearance-none text-white text-base font-bold outline-none transition-all cursor-pointer w-full text-left disabled:opacity-30 disabled:cursor-not-allowed"
+                            style={{
+                                appearance: 'none',
+                                WebkitAppearance: 'none',
+                                MozAppearance: 'none',
+                                backgroundColor: 'transparent',
+                                border: 'none',
+                                borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+                                borderRadius: '0',
+                                padding: '12px 32px 12px 8px',
+                                backgroundImage: 'none'
+                            }}
                         >
-                            <option value="">เลือก</option>
-                            {tambons.map(t => <option key={t} value={t}>{t}</option>)}
+                            <option value="" className="bg-[#121214]">เลือกตำบล</option>
+                            {tambons.map(t => <option key={t} value={t} className="bg-[#121214]">{t}</option>)}
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 group-hover/select:text-indigo-400 transition-colors">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" /></svg>
                         </div>
                     </div>
                 </div>
 
                 {/* Zipcode */}
-                <div className="relative">
-                    <label className="text-[10px] text-gray-500 mb-1 block">รหัสปณ.</label>
-                    <input
-                        type="text"
-                        value={zipcode}
-                        readOnly
-                        className="w-full bg-white/5 text-gray-400 text-sm border border-white/5 rounded-xl px-3 focus:outline-none cursor-not-allowed h-[46px] flex items-center"
-                    />
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">รหัสไปรษณีย์</label>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            value={zipcode}
+                            readOnly
+                            className="w-full h-[54px] bg-white/[0.03] text-white text-lg border border-white/10 rounded-2xl px-4 outline-none cursor-not-allowed flex items-center"
+                            placeholder=""
+                        />
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

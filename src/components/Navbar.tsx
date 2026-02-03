@@ -97,19 +97,22 @@ export default function Navbar() {
               </Link>
             )}
 
-            {/* Credit Balance Display */}
             {isAuthenticated && (
               <button
                 onClick={() => { playSound('click'); setIsWalletOpen(true); }}
                 onMouseEnter={() => playSound('hover', 0.2)}
-                className="hidden md:flex items-center gap-2 mr-4 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#1a1a2e] to-[#16213e] border border-white/10 hover:border-[#667eea]/50 transition-all group"
+                className="hidden md:flex items-center gap-2 mr-6 px-1 py-1 border-b-2 border-white/10 hover:border-indigo-300 transition-all group"
               >
-                <div className="w-6 h-6 rounded-full bg-[#667eea]/20 flex items-center justify-center">
-                  <span className="text-[#667eea] text-xs font-bold">฿</span>
+                <div className="text-indigo-300 group-hover:text-indigo-200 transition-colors">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
                 </div>
-                <span className="text-sm font-bold text-white group-hover:text-[#667eea] transition-colors">
-                  {user?.creditBalance?.toLocaleString() || '0'}
-                </span>
+                <div className="flex items-center gap-1">
+                  <span className="text-sm font-bold bg-gradient-to-r from-indigo-300 to-purple-300 bg-clip-text text-transparent group-hover:from-indigo-200 group-hover:to-purple-200 transition-all">
+                    ฿{user?.creditBalance?.toLocaleString() || '0'}
+                  </span>
+                </div>
               </button>
             )}
 

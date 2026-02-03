@@ -69,35 +69,19 @@ export default function SignupPage() {
     return (
         <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-[#0a0a0f] text-white overflow-hidden">
 
-            {/* ----- Left Side: Graphics ----- */}
-            <div className="hidden lg:flex relative items-center justify-center bg-indigo-950/30 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent z-20" />
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-500/20 via-purple-500/10 to-[#0a0a0f] z-10" />
-
-                <div className="relative z-30 p-12 text-center">
-                    <div className="mb-8 inline-flex p-5 rounded-3xl bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl shadow-indigo-500/20 ring-1 ring-white/20">
-                        <svg className="w-20 h-20 text-indigo-400 drop-shadow-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                        </svg>
-                    </div>
-                    <h2 className="text-5xl font-bold tracking-tight mb-6 text-white drop-shadow-sm">
-                        สร้างบัญชี<span className="text-indigo-400">ของคุณ</span>
-                    </h2>
-                    <p className="text-lg text-gray-400 max-w-md mx-auto font-light leading-relaxed">
-                        เริ่มการเดินทางใหม่ของคุณกับเราวันนี้ สมัครสมาชิกเพื่อรับสิทธิพิเศษและบริการที่ดีที่สุด
-                    </p>
-                </div>
-            </div>
-
-            {/* ----- Right Side: Signup Form ----- */}
-            <div className="flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-[#0a0a0f] relative overflow-y-auto">
+            {/* ----- Left Side: Signup Form ----- */}
+            <div className="flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-[#0a0a0f] relative overflow-y-auto no-scrollbar order-1">
                 <div className="w-full max-w-[450px] space-y-8 relative z-10 py-10">
+                    <br />
+                    <br />
+                    <br />
+                    <br />
                     <div>
                         <h1 className="text-4xl font-bold tracking-tight mb-3 text-white">สร้างบัญชี</h1>
                         <p className="text-gray-400 text-sm font-light">สร้างบัญชีของคุณเพื่อเข้าถึงประสบการณ์พิเศษ</p>
                     </div>
                     <br />
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-6 pt-6">
                         {/* Name Input */}
                         <div className="relative z-0 w-full group">
                             <input
@@ -117,7 +101,7 @@ export default function SignupPage() {
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                             </div>
                         </div>
-                        <br />
+
                         {/* Username Input */}
                         <div className="relative z-0 w-full group">
                             <input
@@ -137,7 +121,7 @@ export default function SignupPage() {
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             </div>
                         </div>
-                        <br />
+
                         {/* Phone Input */}
                         <div className="relative z-0 w-full group">
                             <input
@@ -157,22 +141,21 @@ export default function SignupPage() {
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                             </div>
                         </div>
-                        <br />
+
                         {/* Address Input (Cascading Dropdown) */}
                         <div className="relative z-0 w-full group">
                             <AddressForm onAddressChange={setAddress} />
-                            {/* Validation dummy input to leverage HTML5 validation if needed, though state check handles it */}
                             <input
                                 type="text"
-                                value={address}
+                                value={address || ""}
                                 required
                                 className="opacity-0 absolute w-0 h-0"
-                                onChange={() => { }} // handled by parent
+                                readOnly
                                 onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('กรุณากรอกที่อยู่ให้ครบถ้วน')}
                                 onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                             />
                         </div>
-                        <br />
+
                         {/* Email Input */}
                         <div className="relative z-0 w-full group">
                             <input
@@ -192,7 +175,7 @@ export default function SignupPage() {
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                             </div>
                         </div>
-                        <br />
+
                         {/* Password Input */}
                         <div className="relative z-0 w-full group">
                             <input
@@ -232,7 +215,7 @@ export default function SignupPage() {
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                             </div>
                         </div>
-                        <br />
+
                         {/* Confirm Password Input */}
                         <div className="relative z-0 w-full group">
                             <input
@@ -271,12 +254,12 @@ export default function SignupPage() {
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             </div>
                         </div>
-                        <br />
+
                         <button
                             type="submit"
                             disabled={isLoading}
                             className="relative w-full py-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xl font-extrabold rounded-[2rem]
-                                transition-all duration-500 transform hover:scale-[1.02] 
+                                transition-all duration-500 transform hover:scale-[1.02]
                                 hover:shadow-[0_20px_50px_-10px_rgba(99,102,241,0.7)] hover:brightness-110
                                 hover:from-indigo-500 hover:to-purple-500
                                 active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden group shadow-xl shadow-indigo-500/20 mt-4"
@@ -292,6 +275,28 @@ export default function SignupPage() {
                             </Link>
                         </p>
                     </form>
+                    <br />
+                    <br />
+                </div>
+            </div>
+
+            {/* ----- Right Side: Graphics ----- */}
+            <div className="hidden lg:flex relative items-center justify-center bg-indigo-950/30 overflow-hidden order-2">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent z-20" />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-500/20 via-purple-500/10 to-[#0a0a0f] z-10" />
+
+                <div className="relative z-30 p-12 text-center">
+                    <div className="mb-8 inline-flex p-5 rounded-3xl bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl shadow-indigo-500/20 ring-1 ring-white/20">
+                        <svg className="w-20 h-20 text-indigo-400 drop-shadow-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                    </div>
+                    <h2 className="text-5xl font-bold tracking-tight mb-6 text-white drop-shadow-sm">
+                        สร้างบัญชี<span className="text-indigo-400">ของคุณ</span>
+                    </h2>
+                    <p className="text-lg text-gray-400 max-w-md mx-auto font-light leading-relaxed">
+                        เริ่มการเดินทางใหม่ของคุณกับเราวันนี้ สมัครสมาชิกเพื่อรับสิทธิพิเศษและบริการที่ดีที่สุด
+                    </p>
                 </div>
             </div>
 
@@ -299,6 +304,6 @@ export default function SignupPage() {
             <LoadingModal isOpen={isLoading} message="กำลังสร้างบัญชีของคุณ..." />
             <AlertModal isOpen={isErrorOpen} onClose={() => setIsErrorOpen(false)} title="สมัครสมาชิกไม่สำเร็จ" message={errorMessage} type="error" />
             <AlertModal isOpen={isSuccessOpen} onClose={() => setIsSuccessOpen(false)} title="สมัครสมาชิกสำเร็จ" message="ยินดีต้อนรับสู่ SonthiShop บัญชีของคุณถูกสร้างเรียบร้อยแล้ว" type="success" />
-        </div>
+        </div >
     );
 }

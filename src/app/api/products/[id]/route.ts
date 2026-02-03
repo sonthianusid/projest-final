@@ -20,8 +20,6 @@ export async function GET(
             );
         }
 
-
-
         // Fetch additional images if the table exists
         let images: any[] = [];
         try {
@@ -33,15 +31,27 @@ export async function GET(
             console.warn('Could not fetch product images (table might not exist yet):', e);
         }
 
-        // Attach images to product object
-        const productWithImages = {
+        // Fetch sizes
+        let sizes: any[] = [];
+        try {
+            sizes = await query(
+                'SELECT size_name, stock FROM product_sizes WHERE product_id = ? ORDER BY size_name ASC',
+                [id]
+            );
+        } catch (e) {
+            console.warn('Could not fetch product sizes (table might not exist yet):', e);
+        }
+
+        // Attach images and sizes to product object
+        const productWithData = {
             ...product,
-            images: images.length > 0 ? images.map(img => img.image_url) : []
+            images: images.length > 0 ? images.map(img => img.image_url) : [],
+            sizes: sizes.map(s => ({ size: s.size_name, stock: s.stock }))
         };
 
         return NextResponse.json({
             success: true,
-            product: productWithImages
+            product: productWithData
         });
 
     } catch (error) {
@@ -59,22 +69,65 @@ export async function PUT(
 ) {
     try {
         const { id } = await params;
-        const { name, description, price, image_url, category, stock, is_active } = await request.json();
+        const body = await request.json();
+        const { name, description, price, image_url, category, stock, is_active, brand, original_price, is_new, sizes } = body;
+
+        // Calculate total stock from sizes if provided
+        let totalStock = stock ?? 0;
+        if (sizes && Array.isArray(sizes)) {
+            totalStock = sizes.reduce((sum: number, s: { size: string; stock: number }) => sum + (Number(s.stock) || 0), 0);
+        }
+
+        console.log('Update Product Payload:', {
+            id, name, description, price, image_url, category, stock: totalStock, is_active, brand, original_price, is_new, sizes
+        });
 
         await query(
-            'UPDATE products SET name = ?, description = ?, price = ?, image_url = ?, category = ?, stock = ?, is_active = ? WHERE id = ?',
-            [name, description, price, image_url, category, stock, is_active ?? true, id]
+            'UPDATE products SET name = ?, description = ?, price = ?, image_url = ?, category = ?, stock = ?, is_active = ?, brand = ?, original_price = ?, is_new = ? WHERE id = ?',
+            [
+                name ?? null,
+                description ?? '',
+                price ?? 0,
+                image_url ?? '',
+                category ?? null,
+                totalStock,
+                is_active ?? true,
+                brand ?? '',
+                original_price ?? null,
+                is_new ?? true,
+                id
+            ]
         );
+
+        // Update sizes: delete old ones and insert new ones
+        if (sizes && Array.isArray(sizes)) {
+            // Delete existing sizes
+            await query('DELETE FROM product_sizes WHERE product_id = ?', [id]);
+
+            // Insert new sizes
+            for (const sizeItem of sizes) {
+                if (sizeItem.size && Number(sizeItem.stock) > 0) {
+                    await query(
+                        'INSERT INTO product_sizes (product_id, size_name, stock) VALUES (?, ?, ?)',
+                        [id, sizeItem.size, Number(sizeItem.stock) || 0]
+                    );
+                }
+            }
+        }
 
         return NextResponse.json({
             success: true,
             message: 'อัพเดทสินค้าสำเร็จ'
         });
 
-    } catch (error) {
-        console.error('Update product error:', error);
+    } catch (error: any) {
+        console.error('Update product error details:', error);
         return NextResponse.json(
-            { success: false, message: 'เกิดข้อผิดพลาดในการอัพเดทสินค้า' },
+            {
+                success: false,
+                message: `เกิดข้อผิดพลาด: ${error.message || 'Unknown error'}`,
+                code: error.code // Return SQL error code if available
+            },
             { status: 500 }
         );
     }

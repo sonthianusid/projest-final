@@ -7,6 +7,7 @@ USE sonthishop;
 
 -- เพิ่ม columns ใหม่
 ALTER TABLE products 
+  MODIFY COLUMN image_url TEXT,
   ADD COLUMN IF NOT EXISTS brand VARCHAR(50) DEFAULT 'nike',
   ADD COLUMN IF NOT EXISTS original_price DECIMAL(10,2) NULL,
   ADD COLUMN IF NOT EXISTS is_new BOOLEAN DEFAULT FALSE;

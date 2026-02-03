@@ -40,16 +40,15 @@ export default function ScrollReveal({ children, index = 0, className = "" }: Sc
 
     // คำนวณ Delay: แถวละ 3-4 ชิ้น ก็จะหน่วงเวลาไล่กันไป (0ms, 100ms, 200ms, ...)
     // ใช้ % 4 เพื่อให้มันรีเซ็ต Delay ทุกๆ 4 ชิ้น ไม่ให้นานเกินไปถ้ารายการเยอะ
-    const delay = (index % 4) * 100; 
+    const delay = (index % 4) * 100;
 
     return (
         <div
             ref={ref}
-            className={`${className} transition-all duration-700 ease-out transform ${
-                isVisible 
-                    ? 'opacity-100 translate-y-0' 
+            className={`${className} transition-all duration-700 ease-out transform ${isVisible
+                    ? 'opacity-100 translate-y-0'
                     : 'opacity-0 translate-y-20' // เริ่มต้น: จางและอยู่ต่ำกว่าปกติ 20px
-            }`}
+                }`}
             style={{ transitionDelay: `${delay}ms` }}
         >
             {children}

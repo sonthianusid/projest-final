@@ -56,7 +56,7 @@ export default function WalletPage() {
 
             <div className="container mx-auto px-6 py-10 max-w-2xl">
                 <div className="text-center mb-10">
-                    <h1 className="text-3xl font-bold text-white mb-2">My Wallet</h1>
+                    <h1 className="text-3xl font-bold text-white mb-2">กระเป๋าเงินของฉัน</h1>
                     <p className="text-gray-400">บริหารจัดการเครดิตของคุณ</p>
                 </div>
 

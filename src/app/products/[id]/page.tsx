@@ -20,6 +20,7 @@ interface Product {
     brand: string;
     stock: number;
     is_new: boolean;
+    sizes?: { size: string; stock: number }[];
 }
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -34,6 +35,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     const { user, wallet } = useAuth();
     const [isAdded, setIsAdded] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('กรุณาเลือกไซส์ก่อนเพิ่มสินค้า');
     const [isPaymentOpen, setIsPaymentOpen] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -129,25 +131,79 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             setShowAlert(true);
             return;
         }
+
+        // Check if selected size has stock
+        const sizeStock = product?.sizes?.find(s => s.size === selectedSize)?.stock || 0;
+        if (sizeStock <= 0) {
+            setAlertMessage(`ไซส์ ${selectedSize} ของ ${product?.name} มีสต็อกไม่เพียงพอ`);
+            setShowAlert(true);
+            return;
+        }
+
         // Open payment modal directly
         setIsPaymentOpen(true);
     };
 
-    const handlePaymentConfirm = (method: PaymentMethod) => {
-        if (!product) return;
+    const handlePaymentConfirm = async (method: PaymentMethod) => {
+        if (!product || !user?.address) {
+            // If checking fails, usually PaymentMethodModal handles validation or we should alert
+            setIsPaymentOpen(false);
+            // Verify address exists before calling API (though API checks too)
+            if (!user?.address) {
+                // You might want to show an error or redirect to profile
+                return;
+            }
+        }
 
         setIsPaymentOpen(false); // Close payment modal first
         setIsProcessing(true); // Show loading modal
 
-        // Simulate processing delay
-        setTimeout(() => {
-            if (method === 'store_credit') {
-                wallet.deduct(product.price);
-            }
+        try {
+            const res = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: user?.id,
+                    items: [{
+                        id: product!.id,
+                        name: product!.name,
+                        quantity: 1,
+                        price: product!.price,
+                        selectedSize: selectedSize
+                    }],
+                    totalAmount: product!.price,
+                    paymentMethod: method,
+                    address: user?.address
+                })
+            });
 
-            setIsProcessing(false); // Hide loading modal
-            setShowSuccess(true); // Show success alert
-        }, 2000);
+            const data = await res.json();
+
+            if (data.success) {
+                // If using store credit, maybe update local wallet state if needed
+                if (method === 'store_credit' && data.newBalance !== undefined) {
+                    // Since wallet.deduct is client-side mock/helper, we can still use it or update context if available
+                    wallet.deduct(product!.price);
+                }
+
+                // Refresh product data to show updated stock
+                const productRes = await fetch(`/api/products/${id}`);
+                const productData = await productRes.json();
+                if (productData.success && productData.product) {
+                    setProduct(productData.product);
+                }
+
+                setShowSuccess(true);
+            } else {
+                // Handle error (e.g. out of stock during transaction)
+                alert(data.message || 'การสั่งซื้อล้มเหลว');
+            }
+        } catch (error) {
+            console.error('Buy Now error:', error);
+            alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     const sizes = ['US 7', 'US 7.5', 'US 8', 'US 8.5', 'US 9', 'US 9.5', 'US 10', 'US 10.5', 'US 11'];
@@ -378,19 +434,34 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                     เลือกไซส์
                                     <button className="text-[#667eea] text-sm hover:underline">ตารางไซส์</button>
                                 </h3>
-                                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                                    {sizes.map((size) => (
-                                        <button
-                                            key={size}
-                                            onClick={() => setSelectedSize(size)}
-                                            className={`py-3 rounded-xl border transition-all ${selectedSize === size
-                                                ? 'border-[#667eea] bg-[#667eea]/10 text-white shadow-[0_0_15px_rgba(102,126,234,0.3)]'
-                                                : 'border-white/10 text-gray-400 hover:border-white/30 hover:text-white'
-                                                }`}
-                                        >
-                                            {size}
-                                        </button>
-                                    ))}
+                                <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                                    {(() => {
+                                        // All available sizes
+                                        const allSizes = ['US 7', 'US 7.5', 'US 8', 'US 8.5', 'US 9', 'US 9.5', 'US 10', 'US 10.5', 'US 11'];
+
+                                        return allSizes.map((size) => {
+                                            // Find stock for this size from product.sizes
+                                            const sizeData = product.sizes?.find(s => s.size === size);
+                                            const stock = sizeData?.stock || 0;
+                                            const isOutOfStock = stock <= 0;
+
+                                            return (
+                                                <button
+                                                    key={size}
+                                                    onClick={() => !isOutOfStock && setSelectedSize(size)}
+                                                    disabled={isOutOfStock}
+                                                    className={`py-2.5 px-2 rounded-lg border text-sm transition-all ${isOutOfStock
+                                                        ? 'border-white/5 text-gray-600 cursor-not-allowed bg-white/[0.02]'
+                                                        : selectedSize === size
+                                                            ? 'border-[#667eea] bg-[#667eea]/10 text-white shadow-[0_0_15px_rgba(102,126,234,0.3)]'
+                                                            : 'border-white/10 text-gray-400 hover:border-white/30 hover:text-white'
+                                                        }`}
+                                                >
+                                                    <span className={isOutOfStock ? 'line-through' : ''}>{size}</span>
+                                                </button>
+                                            );
+                                        });
+                                    })()}
                                 </div>
                             </div>
                             <br />
@@ -484,6 +555,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 title="สั่งซื้อสำเร็จ"
                 message="ขอบคุณที่สั่งซื้อสินค้ากับเรา สินค้าจะถูกจัดส่งโดยเร็วที่สุด"
                 type="success"
+            />
+
+            {/* Stock/Size Alert */}
+            <AlertModal
+                isOpen={showAlert}
+                onClose={() => setShowAlert(false)}
+                title="แจ้งเตือน"
+                message={alertMessage}
+                type="error"
             />
         </div>
     );

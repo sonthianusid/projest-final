@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
@@ -49,7 +51,7 @@ const services = [
       </svg>
     ),
     title: 'ชำระเงินปลอดภัย',
-    desc: 'SSL Encrypted'
+    desc: 'เข้ารหัส SSL ปลอดภัยสูงสุด'
   },
 ];
 

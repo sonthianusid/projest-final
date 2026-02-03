@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
         // Find user
         const user = await queryOne<any>(
-            'SELECT * FROM users WHERE username = ?',
+            'SELECT *, credit_balance as creditBalance FROM users WHERE username = ?',
             [username]
         );
 
