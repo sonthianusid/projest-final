@@ -4,7 +4,7 @@ import { query } from '@/lib/db';
 export async function GET(request: NextRequest) {
     try {
         const users = await query(
-            "SELECT id, username, name, email, phone, role, created_at FROM users WHERE role = 'user' ORDER BY created_at DESC"
+            "SELECT id, username, name, email, phone, role, credit_balance, created_at FROM users ORDER BY created_at DESC"
         );
 
         return NextResponse.json({

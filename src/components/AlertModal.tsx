@@ -39,7 +39,7 @@ export default function AlertModal({ isOpen, onClose, title, message, type = 'er
             ></div>
 
             {/* Modal: ขนาดคงเดิม (max-w-[460px], min-h-[300px]) */}
-            <div className={`relative bg-[#0a0a0a]/90 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] w-full max-w-[410px] min-h-[250px] flex flex-col items-center justify-center mx-4 transform transition-all duration-300 ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}`}>
+            <div className={`relative bg-card/90 backdrop-blur-xl border border-border rounded-[2.5rem] p-8 shadow-[0_0_50px_rgba(0,0,0,0.2)] w-full max-w-[410px] min-h-[250px] flex flex-col items-center justify-center mx-4 transform transition-all duration-300 ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}`}>
 
                 {/* Close Button */}
                 <button
@@ -69,13 +69,13 @@ export default function AlertModal({ isOpen, onClose, title, message, type = 'er
                     </div>
 
                     {/* Text */}
-                    <h3 className="text-2xl font-bold text-white mb-2">{title}</h3>
-                    <p className="text-gray-400 mb-6 text-sm leading-relaxed px-4">{message}</p>
+                    <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
+                    <p className="text-muted-foreground mb-6 text-sm leading-relaxed px-4">{message}</p>
 
                     <div className="flex justify-center gap-4 w-full px-2">
                         <button
                             onClick={onClose}
-                            className="min-w-[120px] px-6 py-3 rounded-2xl bg-white/5 text-gray-300 font-semibold hover:bg-white/10 hover:text-white transition-all active:scale-95 border border-white/5"
+                            className="min-w-[120px] px-6 py-3 rounded-2xl bg-secondary text-foreground font-semibold hover:bg-muted transition-all active:scale-95 border border-border"
                         >
                             ยกเลิก
                         </button>

@@ -129,7 +129,7 @@ export default function CartPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#050505] pb-32">
+        <div className="min-h-screen bg-background pb-32">
             {/* Spacer กัน navbar */}
             <div className="h-[var(--navbar-height)]"></div>
 

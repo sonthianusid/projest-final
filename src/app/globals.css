@@ -1,17 +1,98 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
+  /* Common variables */
+  --navbar-height: 68px;
+
+  --ring: #667eea;
+
+  /* Premium Light Mode Palette */
+  --background: #fdfdfe;
+  /* Ultra light cool white */
+  --foreground: #2d3748;
+  /* Slate 800 for softer contrast than black */
+  --card: #ffffff;
+  --card-foreground: #2d3748;
+  --popover: #ffffff;
+  --popover-foreground: #2d3748;
+  --primary: #667eea;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f4f6;
+  /* Cool gray 100 */
+  --secondary-foreground: #1f2937;
+  --muted: #edf2f7;
+  /* Slate 100 */
+  --muted-foreground: #718096;
+  /* Slate 500 */
+  --accent: #e2e8f0;
+  --accent-foreground: #2d3748;
+  --destructive: #fa5252;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  /* Slate 200 */
+  --input: #e2e8f0;
+  --ring: #667eea;
+
+  /* Custom Theme Vars (Light) */
+  --hero-bg-start: #f7fafc;
+  --hero-bg-end: #edf2f7;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(226, 232, 240, 0.6);
+  --section-bg: #f8fafc;
+  /* Slate 50 */
+}
+
+.dark {
+  /* Dark Mode (Project Original) */
   --background: #0a0a0a;
   --foreground: #ededed;
+  --card: #12121a;
+  --card-foreground: #ededed;
+  --popover: #12121a;
+  --popover-foreground: #ededed;
   --primary: #667eea;
+  --primary-foreground: #ffffff;
   --secondary: #1a1a2e;
-  --navbar-height: 68px;
+  --secondary-foreground: #ededed;
+  --muted: #1a1a2e;
+  --muted-foreground: #a1a1aa;
+  --accent: #1a1a2e;
+  --accent-foreground: #ededed;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #ededed;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #667eea;
+
+  /* Custom Theme Vars (Dark) */
+  --hero-bg-start: #1a1a2e;
+  --hero-bg-end: #16213e;
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --section-bg: #0d0d1a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
   --font-sans: 'Noto Sans Thai', sans-serif;
 }
 
@@ -27,8 +108,8 @@ html {
 }
 
 body {
-  background: #0a0a0a;
-  color: #ededed;
+  background: var(--background);
+  color: var(--foreground);
   font-family: 'Noto Sans Thai', sans-serif;
   line-height: 1.7;
   overflow-x: hidden !important;
@@ -41,7 +122,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a2e;
+  background: var(--secondary);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -276,10 +357,11 @@ input[type="radio"]:focus {
 /* ==================== CARD STYLES ==================== */
 
 .card {
-  background: rgba(26, 26, 46, 0.5);
+  background: var(--card);
+  color: var(--card-foreground);
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
@@ -362,7 +444,7 @@ input[type="radio"]:focus {
 }
 
 .hero-bg {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background: linear-gradient(135deg, var(--hero-bg-start) 0%, var(--hero-bg-end) 100%);
   position: relative;
 }
 
@@ -378,9 +460,9 @@ input[type="radio"]:focus {
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--glass-bg);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--glass-border);
   transition: all 0.2s ease;
 }
 
@@ -547,4 +629,98 @@ a {
 .no-scrollbar {
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;
+}
+
+/* ==================== AUTH PAGE SLIDE ANIMATIONS ==================== */
+
+/* Slide in from left (for Login page - form goes left, graphics right) */
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide in from right (for Signup page - form goes left) */
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide graphics from right */
+@keyframes slideGraphicsFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide graphics from left */
+@keyframes slideGraphicsFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Animation classes */
+.animate-slide-from-left {
+  animation: slideInFromLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-from-right {
+  animation: slideInFromRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-graphics-from-right {
+  animation: slideGraphicsFromRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  opacity: 0;
+}
+
+.animate-graphics-from-left {
+  animation: slideGraphicsFromLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  opacity: 0;
+}
+
+/* Stagger animations for form elements */
+.animate-stagger-1 {
+  animation-delay: 0.05s;
+}
+
+.animate-stagger-2 {
+  animation-delay: 0.1s;
+}
+
+.animate-stagger-3 {
+  animation-delay: 0.15s;
+}
+
+.animate-stagger-4 {
+  animation-delay: 0.2s;
+}
+
+.animate-stagger-5 {
+  animation-delay: 0.25s;
 }

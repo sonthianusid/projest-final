@@ -79,7 +79,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-background">
       <div className="h-[68px]"></div>
 
       {/* Hero Section */}
@@ -88,12 +88,12 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <ScrollReveal className="space-y-8">
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight">
+              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-tight">
                 รองเท้าผ้าใบ
                 <span className="gradient-text block mt-2">คุณภาพพรีเมียม</span>
               </h1>
 
-              <p className="text-gray-400 text-lg max-w-md leading-relaxed mt-2">
+              <p className="text-muted-foreground text-lg max-w-md leading-relaxed mt-2">
                 ค้นพบรองเท้าผ้าใบ Nike และ Adidas รุ่นล่าสุด สินค้าแท้ 100% พร้อมจัดส่งทั่วประเทศ
               </p>
               <br />
@@ -167,7 +167,7 @@ export default function Home() {
               {featuredProducts.map((product, index) => (
                 <ScrollReveal key={product.id} index={index}>
                   <div className="card group h-full">
-                    <div className="relative aspect-square bg-gradient-to-br from-[#1a1a2e] to-[#16213e] overflow-hidden">
+                    <div className="relative aspect-square bg-muted overflow-hidden">
                       <span className={`badge absolute top-4 left-4 z-10 ${product.brand === 'nike' ? 'badge-nike' : 'badge-adidas'}`}>
                         {product.brand?.toUpperCase() || 'BRAND'}
                       </span>
@@ -186,12 +186,12 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="p-5">
-                      <h3 className="text-white font-medium mb-3 group-hover:text-[#667eea] transition-colors line-clamp-1">
+                      <h3 className="text-foreground font-medium mb-3 group-hover:text-[#667eea] transition-colors line-clamp-1">
                         {product.name}
                       </h3>
                       <div className="mb-4">
                         <div className="flex items-baseline gap-2 mb-2">
-                          <span className="text-xl font-bold text-white">฿{product.price?.toLocaleString()}</span>
+                          <span className="text-xl font-bold text-foreground">฿{product.price?.toLocaleString()}</span>
                           {product.original_price && product.original_price > product.price && (
                             <>
                               <span className="text-gray-500 line-through text-sm ml-1">฿{product.original_price.toLocaleString()}</span>
@@ -225,14 +225,14 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="pt-32 pb-24 bg-[#0d0d1a]">
+      <section className="pt-32 pb-24 bg-muted/30">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <ScrollReveal>
 
               <br />
-              <h2 className="text-3xl font-bold text-white">บริการของเรา</h2>
-              <p className="text-gray-400 mt-3">ทำไมต้องเลือกซื้อกับเรา</p>
+              <h2 className="text-3xl font-bold text-foreground">บริการของเรา</h2>
+              <p className="text-muted-foreground mt-3">ทำไมต้องเลือกซื้อกับเรา</p>
               <br />
 
             </ScrollReveal>
@@ -244,8 +244,8 @@ export default function Home() {
                   <div className="mb-6 flex justify-center">
                     {service.icon}
                   </div>
-                  <h3 className="text-white font-semibold text-lg mb-2">{service.title}</h3>
-                  <p className="text-gray-400 text-sm">{service.desc}</p>
+                  <h3 className="text-foreground font-semibold text-lg mb-2">{service.title}</h3>
+                  <p className="text-muted-foreground text-sm">{service.desc}</p>
                 </div>
               </ScrollReveal>
             ))}

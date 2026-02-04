@@ -85,7 +85,7 @@ export default function AdminProducts() {
 
             <div className="container mx-auto px-6 py-8">
                 {/* Products Table */}
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden">
+                <div className="bg-white/5 backdrop-blur-sm rounded-none border border-white/10 overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>

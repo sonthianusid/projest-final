@@ -120,25 +120,25 @@ export default function WalletModal({ isOpen, onClose }: WalletModalProps) {
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300" onClick={onClose} />
 
             {/* Modal Container */}
-            <div className={`relative bg-[#0a0a0f] border border-white/10 rounded-xl overflow-hidden w-full max-w-[420px] shadow-2xl shadow-black/50 transform transition-all duration-300 flex flex-col max-h-[85vh] ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}`}>
+            <div className={`relative bg-card border border-border rounded-xl overflow-hidden w-full max-w-[420px] shadow-2xl shadow-black/20 transform transition-all duration-300 flex flex-col max-h-[85vh] ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}`}>
 
                 {/* Header Section */}
                 <div className="p-8 pb-4 relative z-10 shrink-0">
                     <div className="flex justify-between items-center mb-6">
                         <div className="flex items-center gap-3">
                             {step !== 'amount' && (
-                                <button onClick={handleBackStep} className="group flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                                    <svg className="w-5 h-5 text-gray-400 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                                <button onClick={handleBackStep} className="group flex items-center justify-center w-8 h-8 rounded-lg bg-secondary hover:bg-muted transition-colors">
+                                    <svg className="w-5 h-5 text-muted-foreground group-hover:text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                                 </button>
                             )}
                             <div>
-                                <h2 className="text-xl font-bold text-white tracking-tight">
+                                <h2 className="text-xl font-bold text-foreground tracking-tight">
                                     {step === 'amount' ? 'ระบุยอดเงิน' : step === 'method' ? 'เลือกช่องทาง' : 'ยืนยันรายการ'}
                                 </h2>
-                                <p className="text-xs text-gray-500 font-medium">ขั้นตอน {step === 'amount' ? '1' : step === 'method' ? '2' : '3'} จาก 3</p>
+                                <p className="text-xs text-muted-foreground font-medium">ขั้นตอน {step === 'amount' ? '1' : step === 'method' ? '2' : '3'} จาก 3</p>
                             </div>
                         </div>
-                        <button onClick={onClose} className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                        <button onClick={onClose} className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
@@ -158,8 +158,8 @@ export default function WalletModal({ isOpen, onClose }: WalletModalProps) {
                     {step === 'amount' && (
                         <div className="space-y-8 animate-fadeIn">
                             <div className="text-center space-y-2">
-                                <p className="text-gray-500 text-xs uppercase tracking-wider font-bold">ยอดเงินคงเหลือปัจจุบัน</p>
-                                <p className="text-3xl font-bold text-white tracking-tight">฿{user?.creditBalance?.toLocaleString() || '0'}</p>
+                                <p className="text-muted-foreground text-xs uppercase tracking-wider font-bold">ยอดเงินคงเหลือปัจจุบัน</p>
+                                <p className="text-3xl font-bold text-foreground tracking-tight">฿{user?.creditBalance?.toLocaleString() || '0'}</p>
                             </div>
 
                             <div className="relative group">
@@ -168,10 +168,10 @@ export default function WalletModal({ isOpen, onClose }: WalletModalProps) {
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     placeholder="0.00"
-                                    className="w-full bg-transparent border-b-2 border-white/10 focus:border-indigo-500 py-4 text-center text-5xl font-bold text-white focus:outline-none transition-all placeholder:text-gray-700"
+                                    className="w-full bg-transparent border-b-2 border-border focus:border-primary py-4 text-center text-5xl font-bold text-foreground focus:outline-none transition-all placeholder:text-muted-foreground/30"
                                     autoFocus
                                 />
-                                <p className="text-center text-gray-500 text-sm mt-2">ระบุจำนวนเงินที่ต้องการเติม</p>
+                                <p className="text-center text-muted-foreground text-sm mt-2">ระบุจำนวนเงินที่ต้องการเติม</p>
                             </div>
 
                             <div className="grid grid-cols-3 gap-3">
@@ -179,7 +179,7 @@ export default function WalletModal({ isOpen, onClose }: WalletModalProps) {
                                     <button
                                         key={val}
                                         onClick={() => setAmount(val.toString())}
-                                        className="py-3 rounded-xl bg-white/[0.03] border border-white/5 text-gray-400 text-sm font-medium hover:bg-indigo-500/10 hover:text-indigo-400 hover:border-indigo-500/30 transition-all active:scale-95"
+                                        className="py-3 rounded-xl bg-secondary border border-border text-foreground text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all active:scale-95"
                                     >
                                         +{val.toLocaleString()}
                                     </button>
@@ -192,8 +192,8 @@ export default function WalletModal({ isOpen, onClose }: WalletModalProps) {
                     {step === 'method' && (
                         <div className="space-y-6 animate-fadeIn">
                             <div className="text-center mb-6">
-                                <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">ยอดชำระสุทธิ</p>
-                                <p className="font-bold text-white text-4xl">฿{parseFloat(amount).toLocaleString()}</p>
+                                <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider mb-1">ยอดชำระสุทธิ</p>
+                                <p className="font-bold text-foreground text-4xl">฿{parseFloat(amount).toLocaleString()}</p>
                             </div>
 
                             <div className="space-y-3">
@@ -222,31 +222,31 @@ export default function WalletModal({ isOpen, onClose }: WalletModalProps) {
                                             onClick={() => setSelectedMethod(method.id as PaymentMethod)}
                                             className={`w-full p-4 rounded-xl border transition-all duration-300 flex items-center gap-4 text-left group
                                                 ${isSelected
-                                                    ? `bg-white/[0.03] ${method.activeBorder} shadow-lg shadow-black/20`
-                                                    : 'bg-transparent border-white/5 hover:bg-white/[0.02] hover:border-white/10'
+                                                    ? `bg-secondary ${method.activeBorder} shadow-lg shadow-black/5`
+                                                    : 'bg-card border-border hover:bg-secondary hover:border-border'
                                                 }
                                             `}
                                         >
                                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 flex-shrink-0
                                                 ${isSelected
                                                     ? `${method.activeColor} text-white shadow-lg`
-                                                    : 'bg-white/5 text-gray-400 group-hover:bg-white/10 group-hover:text-gray-200'
+                                                    : 'bg-secondary text-muted-foreground group-hover:bg-muted group-hover:text-foreground'
                                                 }
                                             `}>
                                                 {method.icon}
                                             </div>
 
                                             <div className="flex-1 min-w-0">
-                                                <span className={`block font-bold text-sm tracking-wide transition-colors ${isSelected ? 'text-white' : 'text-gray-300'}`}>
+                                                <span className={`block font-bold text-sm tracking-wide transition-colors ${isSelected ? 'text-foreground' : 'text-foreground'}`}>
                                                     {method.label}
                                                 </span>
-                                                <span className={`block text-xs transition-colors mt-0.5 ${isSelected ? 'text-gray-400' : 'text-gray-600'}`}>
+                                                <span className={`block text-xs transition-colors mt-0.5 ${isSelected ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
                                                     {method.desc}
                                                 </span>
                                             </div>
 
                                             <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-300 overflow-hidden
-                                                ${isSelected ? `${method.activeBorder} ${method.activeColor}` : 'border-white/20 group-hover:border-white/40'}
+                                                ${isSelected ? `${method.activeBorder} ${method.activeColor}` : 'border-border group-hover:border-primary/50'}
                                             `}>
                                                 {isSelected && <div className="w-2 h-2 rounded-full bg-white shadow-sm" />}
                                             </div>
@@ -263,17 +263,17 @@ export default function WalletModal({ isOpen, onClose }: WalletModalProps) {
                             {selectedMethod === 'promptpay' ? (
                                 <div className="flex flex-col items-center space-y-6">
                                     <div className="text-center space-y-2">
-                                        <h4 className="text-white font-bold text-xl tracking-wide">QR PromptPay</h4>
-                                        <p className="text-gray-400 text-sm font-medium">สแกน QR Code เพื่อเติมเงิน</p>
+                                        <h4 className="text-foreground font-bold text-xl tracking-wide">QR PromptPay</h4>
+                                        <p className="text-muted-foreground text-sm font-medium">สแกน QR Code เพื่อเติมเงิน</p>
                                     </div>
-                                    <div className="p-4 bg-white rounded-xl shadow-lg shadow-white/5">
+                                    <div className="p-4 bg-white rounded-xl shadow-lg shadow-black/5">
                                         <img src={`https://promptpay.io/0812345678/${amount}.png`} alt="QR" className="w-48 h-48 mix-blend-multiply" />
                                     </div>
                                     <div className="text-center space-y-1">
-                                        <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">สแกน QR Code เพื่อเติมเงิน</p>
-                                        <div className="text-2xl font-bold text-white">฿{parseFloat(amount).toLocaleString()}</div>
+                                        <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">สแกน QR Code เพื่อเติมเงิน</p>
+                                        <div className="text-2xl font-bold text-foreground">฿{parseFloat(amount).toLocaleString()}</div>
                                     </div>
-                                    <div className="flex items-center gap-2 text-indigo-400 bg-indigo-500/10 px-4 py-2 rounded-lg border border-indigo-500/20">
+                                    <div className="flex items-center gap-2 text-indigo-500 bg-indigo-500/10 px-4 py-2 rounded-lg border border-indigo-500/20">
                                         <svg className="w-4 h-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                         <span className="font-mono font-medium">{formatTime(timeLeft)}</span>
                                     </div>
@@ -283,15 +283,15 @@ export default function WalletModal({ isOpen, onClose }: WalletModalProps) {
 
 
                                     <div className="text-center space-y-2">
-                                        <h4 className="text-white font-bold text-xl tracking-wide">TrueMoney Wallet</h4>
-                                        <p className="text-gray-400 text-sm font-medium">สแกน QR Code เพื่อเติมเงิน</p>
+                                        <h4 className="text-foreground font-bold text-xl tracking-wide">TrueMoney Wallet</h4>
+                                        <p className="text-muted-foreground text-sm font-medium">สแกน QR Code เพื่อเติมเงิน</p>
                                     </div>
 
                                     <div className="p-4 bg-white rounded-xl shadow-lg shadow-orange-500/20 ring-1 ring-orange-500/20">
                                         <img src={`https://promptpay.io/0812345678/${amount}.png`} alt="TrueMoney QR" className="w-48 h-48 mix-blend-multiply" />
                                     </div>
 
-                                    <div className="flex items-center gap-2 text-orange-400 bg-orange-500/10 px-4 py-2 rounded-lg border border-orange-500/20">
+                                    <div className="flex items-center gap-2 text-orange-500 bg-orange-500/10 px-4 py-2 rounded-lg border border-orange-500/20">
                                         <svg className="w-4 h-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                         <span className="font-mono font-medium">{formatTime(timeLeft)}</span>
                                     </div>
@@ -300,8 +300,8 @@ export default function WalletModal({ isOpen, onClose }: WalletModalProps) {
 
                             {/* Test Mode Note */}
                             <div className="mt-auto pt-6 text-center">
-                                <p className="text-xs text-gray-500">
-                                    <span className="text-gray-400 font-medium">Test Mode:</span> ยอดเงินจะเข้าทันทีหลังยืนยัน
+                                <p className="text-xs text-muted-foreground">
+                                    <span className="text-muted-foreground font-medium">Test Mode:</span> ยอดเงินจะเข้าทันทีหลังยืนยัน
                                 </p>
                             </div>
                         </div>

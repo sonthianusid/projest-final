@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function AboutPage() {
     return (
-        <div className="min-h-screen bg-[#0a0a0f] pt-32 pb-20 px-4 relative overflow-hidden font-sans">
+        <div className="min-h-screen bg-background pt-32 pb-20 px-4 relative overflow-hidden font-sans">
             {/* Subtle Background Effects */}
             <div className="fixed inset-0 pointer-events-none">
                 <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-900/10 rounded-full blur-[120px]" />
@@ -35,12 +35,9 @@ export default function AboutPage() {
                                 <div className="absolute inset-0 bg-indigo-500/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <div className="relative w-48 h-48 rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
                                     <img
-                                        src="/images/profile-placeholder.jpg"
+                                        src="/images/profile.png"
                                         alt="Profile"
                                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                                        onError={(e) => {
-                                            e.currentTarget.src = 'https://ui-avatars.com/api/?name=Thanakrit+R&background=0F0F13&color=fff&size=512&bold=true';
-                                        }}
                                     />
                                 </div>
                             </div>

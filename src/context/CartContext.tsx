@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product } from '@/data/products';
+import { useAuth } from './AuthContext';
 
 export interface CartItem extends Product {
     quantity: number;
@@ -22,8 +23,10 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
+    const { user } = useAuth();
     const [cart, setCart] = useState<CartItem[]>([]);
     const [flyingImage, setFlyingImage] = useState<{ src: string, startRect: DOMRect, endRect: DOMRect } | null>(null);
+    const [isInitialized, setIsInitialized] = useState(false);
 
     const triggerCartAnimation = (imageSrc: string, startRect: DOMRect) => {
         const cartIcon = document.getElementById('cart-icon-target');
@@ -37,22 +40,36 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    // Load cart from localStorage on mount
+    // Load cart from localStorage whenever user changes (or on mount)
     useEffect(() => {
-        const savedCart = localStorage.getItem('sneakerStore_cart');
+        // Prevent saving while we are switching users
+        setIsInitialized(false);
+
+        const cartKey = user?.id ? `sneakerStore_cart_${user.id}` : 'sneakerStore_cart_guest';
+        const savedCart = localStorage.getItem(cartKey);
+
         if (savedCart) {
             try {
                 setCart(JSON.parse(savedCart));
             } catch (error) {
                 console.error('Failed to parse cart data:', error);
+                setCart([]);
             }
+        } else {
+            setCart([]);
         }
-    }, []);
 
-    // Save cart to localStorage whenever it changes
+        // Mark as initialized so the save effect can start working
+        setIsInitialized(true);
+    }, [user]);
+
+    // Save cart to localStorage whenever it changes, but ONLY after initialization
     useEffect(() => {
-        localStorage.setItem('sneakerStore_cart', JSON.stringify(cart));
-    }, [cart]);
+        if (!isInitialized) return;
+
+        const cartKey = user?.id ? `sneakerStore_cart_${user.id}` : 'sneakerStore_cart_guest';
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+    }, [cart, user, isInitialized]);
 
     const addToCart = (product: CartItem) => {
         setCart((prevCart) => {

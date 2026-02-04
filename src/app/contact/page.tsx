@@ -90,7 +90,7 @@ export default function ContactPage() {
                                 <br />กรุณากรอกฟอร์มหรือติดต่อผ่านช่องทางด้านล่าง
                             </p>
                         </div>
-<br />
+                        <br />
                         <div className="space-y-6">
                             {/* Email */}
                             <div className="group flex items-center p-6 bg-[#12121a] border border-white/5 rounded-2xl hover:border-indigo-500/30 transition-all duration-300 shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-1">
@@ -138,7 +138,7 @@ export default function ContactPage() {
                     <div className="relative">
                         <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-2xl blur-2xl opacity-50" />
                         <div className="relative bg-[#12121a] border border-white/5 rounded-2xl p-8 md:p-10 shadow-2xl">
-                        
+
                             <h3 className="text-2xl font-bold text-white mb-8">ส่งข้อความถึงเรา</h3>
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="grid md:grid-cols-2 gap-6">

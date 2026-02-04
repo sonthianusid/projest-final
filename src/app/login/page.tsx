@@ -50,9 +50,9 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-[#0a0a0f] text-white overflow-hidden">
+        <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-background text-foreground overflow-hidden">
             {/* ----- Left Column (Graphics) ----- */}
-            <div className="hidden lg:flex relative items-center justify-center bg-indigo-950/30 overflow-hidden">
+            <div className="hidden lg:flex relative items-center justify-center bg-indigo-950/30 overflow-hidden animate-graphics-from-left">
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent z-20" />
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-500/20 via-purple-500/10 to-[#0a0a0f] z-10" />
 
@@ -72,7 +72,7 @@ export default function LoginPage() {
             </div>
 
             {/* ----- Right Column (Login Form) ----- */}
-            <div className="flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-[#0a0a0f] relative">
+            <div className="flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-background relative animate-slide-from-right">
                 {/* Mobile Glow */}
                 <div className="lg:hidden absolute top-0 right-0 w-64 h-64 bg-indigo-600/10 rounded-full blur-[80px]" />
 

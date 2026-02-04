@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import ProfileDropdown from '@/components/ProfileDropdown';
 import WalletModal from '@/components/WalletModal';
 import { useSound } from '@/hooks/useSound';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function Navbar() {
   // ... (State เดิมยังคงอยู่) ...
@@ -36,7 +37,7 @@ export default function Navbar() {
       className="fixed top-0 left-0 right-0 z-50"
     >
       {/* Solid Background with Blur */}
-      <div className="absolute inset-0 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10"></div>
+      <div className="absolute inset-0 bg-background/95 backdrop-blur-xl border-b border-border"></div>
 
       <div className="relative container mx-auto px-6">
         <div className="flex items-center justify-between h-[68px]">
@@ -49,7 +50,7 @@ export default function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 12c-1.5 0-2.5 2-2.5 3.5s1 2.5 2.5 2.5 2.5-1 2.5-2.5-1-3.5-2.5-3.5z" />
               </svg>
             </div>
-            <span className="text-xl font-bold text-white hidden sm:block">
+            <span className="text-xl font-bold text-foreground hidden sm:block">
               Sonthi<span className="text-[#667eea]">Shop</span>
             </span>
           </Link>
@@ -63,8 +64,8 @@ export default function Navbar() {
                 onClick={() => playSound('click')}
                 onMouseEnter={() => playSound('hover', 0.2)}
                 className={`px-4 py-2 font-medium transition-all relative nav-link ${pathname === link.href
-                  ? 'text-white'
-                  : 'text-white/60 hover:text-white'
+                  ? 'text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
                   }`}
               >
                 {link.label}
@@ -115,6 +116,9 @@ export default function Navbar() {
                 </div>
               </button>
             )}
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {/* Cart Button */}
             <Link

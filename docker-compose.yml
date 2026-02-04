@@ -18,7 +18,9 @@ services:
 
   # 2. เว็บ Next.js
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: nextjs-web
     restart: always
     ports:
@@ -31,11 +33,6 @@ services:
       - DB_USER=root
       - DB_PASSWORD=root123
       - DB_NAME=sonthishop
-    # --- ส่วนสำคัญสำหรับ Hot Reload ---
-    volumes:
-      - .:/app                 # เชื่อมโฟลเดอร์เครื่องเรา เข้ากับ Docker
-      - /app/node_modules      # ยกเว้นโฟลเดอร์นี้ (ให้ใช้ของใน Docker)
-      - /app/.next             # ยกเว้นโฟลเดอร์นี้ (ป้องกันไฟล์ตีกัน)
 
   # 3. Adminer (ตัวจัดการ Database)
   adminer:

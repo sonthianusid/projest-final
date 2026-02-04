@@ -21,9 +21,9 @@ interface Product {
 
 const categories = [
     { key: 'all', label: 'ทั้งหมด' },
-    { key: 'running', label: 'วิ่ง' },
-    { key: 'lifestyle', label: 'ไลฟ์สไตล์' },
-    { key: 'basketball', label: 'บาสเก็ตบอล' },
+    { key: 'วิ่ง', label: 'วิ่ง' },
+    { key: 'ไลฟ์สไตล์', label: 'ไลฟ์สไตล์' },
+    { key: 'บาสเก็ตบอล', label: 'บาสเก็ตบอล' },
 ];
 
 export default function ProductsPage() {
@@ -109,8 +109,13 @@ export default function ProductsPage() {
     // Filter and Sort products
     const filteredAndSortedProducts = useMemo(() => {
         let result = products.filter((product) => {
-            const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-            const matchesBrand = selectedBrand === 'all' || product.brand === selectedBrand;
+            const productCategory = product.category ? product.category.toLowerCase() : '';
+            const productBrand = product.brand ? product.brand.toLowerCase() : '';
+            const filterCategory = selectedCategory.toLowerCase();
+            const filterBrand = selectedBrand.toLowerCase();
+
+            const matchesCategory = selectedCategory === 'all' || productCategory === filterCategory;
+            const matchesBrand = selectedBrand === 'all' || productBrand === filterBrand;
             return matchesCategory && matchesBrand;
         });
 
@@ -135,7 +140,7 @@ export default function ProductsPage() {
                 case 'newest':
                 default:
                     // Priority: is_new, then id descending
-                    if ((a.is_new as any) === (b.is_new as any)) return b.id - a.id;
+                    if ((a.is_new as any) == (b.is_new as any)) return b.id - a.id;
                     return ((b.is_new as any) || 0) - ((a.is_new as any) || 0);
             }
         });
@@ -146,7 +151,7 @@ export default function ProductsPage() {
     // Loading skeleton
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#0a0a0a]">
+            <div className="min-h-screen bg-background">
                 <div className="h-[68px]"></div>
                 <section className="py-6 border-b border-white/5">
                     <div className="container mx-auto px-6">
@@ -174,7 +179,7 @@ export default function ProductsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a]">
+        <div className="min-h-screen bg-background">
             {/* Spacer for navbar */}
             <div className="h-[68px]"></div>
 

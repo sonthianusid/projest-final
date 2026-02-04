@@ -112,7 +112,7 @@ export default function AdminOrders() {
                         <p className="text-gray-500">ยังไม่มีคำสั่งซื้อ</p>
                     </div>
                 ) : (
-                    <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden">
+                    <div className="bg-white/5 backdrop-blur-sm rounded-none border border-white/10 overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead>
@@ -151,11 +151,11 @@ export default function AdminOrders() {
                                 </tbody>
                             </table>
                         </div>
-                        
+
                     </div>
                 )}
             </div>
-            
+
         </div>
     );
 }

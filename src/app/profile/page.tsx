@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AlertModal from '@/components/AlertModal';
@@ -8,7 +8,7 @@ import AddressForm from '@/components/AddressForm';
 import OrderDetailModal from '@/components/OrderDetailModal';
 import LoadingModal from '@/components/LoadingModal';
 
-export default function ProfilePage() {
+function ProfileContent() {
     const { user, isAuthenticated, updateProfile } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -261,7 +261,7 @@ export default function ProfilePage() {
                                                         type="text"
                                                         value={formData.username}
                                                         disabled
-                                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 text-gray-400 font-mono text-sm cursor-not-allowed rounded-xl"
+                                                        className="w-full px-0 py-3 bg-transparent border-0 border-b border-white/20 text-gray-400 font-mono text-sm cursor-not-allowed rounded-none focus:outline-none"
                                                     />
                                                 </div>
                                             </div>
@@ -275,7 +275,7 @@ export default function ProfilePage() {
                                                         value={formData.name}
                                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                                         disabled={!isEditing}
-                                                        className={`w-full px-4 py-3 bg-white/5 border text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 transition-all text-sm font-medium rounded-xl ${!isEditing ? 'border-white/10 text-gray-400 cursor-not-allowed' : 'border-white/20 group-hover/input:border-white/40'}`}
+                                                        className={`w-full px-0 py-3 bg-transparent border-0 border-b text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 transition-all text-sm font-medium rounded-none ${!isEditing ? 'border-white/20 text-gray-400 cursor-not-allowed' : 'border-white/30 group-hover/input:border-white/50'}`}
                                                     />
                                                 </div>
                                             </div>
@@ -291,7 +291,7 @@ export default function ProfilePage() {
                                                         value={formData.email}
                                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                                         disabled={!isEditing}
-                                                        className={`w-full px-4 py-3 bg-white/5 border text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 transition-all text-sm font-medium rounded-xl ${!isEditing ? 'border-white/10 text-gray-400 cursor-not-allowed' : 'border-white/20 group-hover/input:border-white/40'}`}
+                                                        className={`w-full px-0 py-3 bg-transparent border-0 border-b text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 transition-all text-sm font-medium rounded-none ${!isEditing ? 'border-white/20 text-gray-400 cursor-not-allowed' : 'border-white/30 group-hover/input:border-white/50'}`}
                                                     />
                                                 </div>
                                             </div>
@@ -305,7 +305,7 @@ export default function ProfilePage() {
                                                         value={formData.phone}
                                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                                         disabled={!isEditing}
-                                                        className={`w-full px-4 py-3 bg-white/5 border text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 transition-all text-sm font-medium rounded-xl ${!isEditing ? 'border-white/10 text-gray-400 cursor-not-allowed' : 'border-white/20 group-hover/input:border-white/40'}`}
+                                                        className={`w-full px-0 py-3 bg-transparent border-0 border-b text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 transition-all text-sm font-medium rounded-none ${!isEditing ? 'border-white/20 text-gray-400 cursor-not-allowed' : 'border-white/30 group-hover/input:border-white/50'}`}
                                                     />
                                                 </div>
                                             </div>
@@ -326,7 +326,7 @@ export default function ProfilePage() {
                                                     value={formData.address}
                                                     disabled
                                                     rows={3}
-                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 text-gray-400 cursor-not-allowed resize-none text-sm leading-relaxed rounded-xl"
+                                                    className="w-full px-0 py-3 bg-transparent border-0 border-b border-white/20 text-gray-400 cursor-not-allowed resize-none text-sm leading-relaxed rounded-none focus:outline-none"
                                                 />
                                             )}
                                         </div>
@@ -467,5 +467,17 @@ export default function ProfilePage() {
                 message="กำลังบันทึกข้อมูล..."
             />
         </div>
+    );
+}
+
+export default function ProfilePage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+                <div className="w-10 h-10 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+            </div>
+        }>
+            <ProfileContent />
+        </Suspense>
     );
 }

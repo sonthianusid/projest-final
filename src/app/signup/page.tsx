@@ -67,10 +67,10 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-[#0a0a0f] text-white overflow-hidden">
+        <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-background text-foreground overflow-hidden">
 
             {/* ----- Left Side: Signup Form ----- */}
-            <div className="flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-[#0a0a0f] relative overflow-y-auto no-scrollbar order-1">
+            <div className="flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-background relative overflow-y-auto no-scrollbar order-1 animate-slide-from-left">
                 <div className="w-full max-w-[450px] space-y-8 relative z-10 py-10">
                     <br />
                     <br />
@@ -281,7 +281,7 @@ export default function SignupPage() {
             </div>
 
             {/* ----- Right Side: Graphics ----- */}
-            <div className="hidden lg:flex relative items-center justify-center bg-indigo-950/30 overflow-hidden order-2">
+            <div className="hidden lg:flex relative items-center justify-center bg-indigo-950/30 overflow-hidden order-2 animate-graphics-from-right">
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent z-20" />
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-500/20 via-purple-500/10 to-[#0a0a0f] z-10" />
 

@@ -240,15 +240,26 @@ export default function AddressForm({ onAddressChange, initialAddress }: Address
                 {/* Zipcode */}
                 <div className="space-y-2">
                     <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">รหัสไปรษณีย์</label>
-                    <div className="relative">
+                    <div className="relative group/select">
                         <input
                             type="text"
                             value={zipcode}
                             readOnly
-                            className="w-full h-[54px] bg-white/[0.03] text-white text-lg border border-white/10 rounded-2xl px-4 outline-none cursor-not-allowed flex items-center"
+                            className="appearance-none text-white text-base font-bold outline-none transition-all cursor-not-allowed w-full text-left"
+                            style={{
+                                appearance: 'none',
+                                WebkitAppearance: 'none',
+                                MozAppearance: 'none',
+                                backgroundColor: 'transparent',
+                                border: 'none',
+                                borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+                                borderRadius: '0',
+                                padding: '12px 32px 12px 8px',
+                                backgroundImage: 'none'
+                            }}
                             placeholder=""
                         />
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                         </div>
                     </div>

@@ -9,18 +9,22 @@ export async function GET(request: NextRequest) {
 
         let dateCondition = "";
 
+        // Helper for Thai Timezone (UTC+7)
+        const toThaiTime = "DATE_ADD(created_at, INTERVAL 7 HOUR)";
+        const currentThaiDate = "DATE(DATE_ADD(NOW(), INTERVAL 7 HOUR))";
+
         switch (filter) {
             case 'today':
-                dateCondition = "AND DATE(created_at) = CURDATE()";
+                dateCondition = `AND DATE(${toThaiTime}) = ${currentThaiDate}`;
                 break;
             case 'week':
-                dateCondition = "AND YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1)";
+                dateCondition = `AND YEARWEEK(${toThaiTime}, 1) = YEARWEEK(${currentThaiDate}, 1)`;
                 break;
             case 'month':
-                dateCondition = "AND MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())";
+                dateCondition = `AND MONTH(${toThaiTime}) = MONTH(${currentThaiDate}) AND YEAR(${toThaiTime}) = YEAR(${currentThaiDate})`;
                 break;
             case 'year':
-                dateCondition = "AND YEAR(created_at) = YEAR(CURDATE())";
+                dateCondition = `AND YEAR(${toThaiTime}) = YEAR(${currentThaiDate})`;
                 break;
             case 'all':
             default:
@@ -68,52 +72,49 @@ export async function GET(request: NextRequest) {
         );
 
         let chartQuery = "";
-        let chartLabelFormat = "";
-        let groupBy = "";
-        let orderBy = "";
 
         // Define chart query based on filter
         switch (filter) {
             case 'today':
                 // Hourly stats for today
-                chartQuery = `SELECT DATE_FORMAT(created_at, '%H:00') as date, COALESCE(SUM(CASE WHEN status IN ('delivered', 'processing', 'shipped') THEN total_amount ELSE 0 END), 0) as total 
+                chartQuery = `SELECT DATE_FORMAT(${toThaiTime}, '%H:00') as date, COALESCE(SUM(CASE WHEN status IN ('delivered', 'processing', 'shipped') THEN total_amount ELSE 0 END), 0) as total 
                               FROM orders 
-                              WHERE DATE(created_at) = CURDATE() AND status != 'cancelled'
-                              GROUP BY HOUR(created_at) 
-                              ORDER BY created_at ASC`;
+                              WHERE DATE(${toThaiTime}) = ${currentThaiDate} AND status != 'cancelled'
+                              GROUP BY HOUR(${toThaiTime}) 
+                              ORDER BY ${toThaiTime} ASC`;
                 break;
             case 'week':
                 // Daily stats for current week (or last 7 days)
-                chartQuery = `SELECT DATE_FORMAT(created_at, '%a') as date, COALESCE(SUM(CASE WHEN status IN ('delivered', 'processing', 'shipped') THEN total_amount ELSE 0 END), 0) as total 
+                chartQuery = `SELECT DATE_FORMAT(${toThaiTime}, '%a') as date, COALESCE(SUM(CASE WHEN status IN ('delivered', 'processing', 'shipped') THEN total_amount ELSE 0 END), 0) as total 
                               FROM orders 
-                              WHERE YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1) AND status != 'cancelled'
-                              GROUP BY DATE(created_at) 
-                              ORDER BY created_at ASC`;
+                              WHERE YEARWEEK(${toThaiTime}, 1) = YEARWEEK(${currentThaiDate}, 1) AND status != 'cancelled'
+                              GROUP BY DATE(${toThaiTime}) 
+                              ORDER BY ${toThaiTime} ASC`;
                 break;
             case 'month':
                 // Daily stats for current month
-                chartQuery = `SELECT DATE_FORMAT(created_at, '%d %b') as date, COALESCE(SUM(CASE WHEN status IN ('delivered', 'processing', 'shipped') THEN total_amount ELSE 0 END), 0) as total 
+                chartQuery = `SELECT DATE_FORMAT(${toThaiTime}, '%d %b') as date, COALESCE(SUM(CASE WHEN status IN ('delivered', 'processing', 'shipped') THEN total_amount ELSE 0 END), 0) as total 
                               FROM orders 
-                              WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) AND status != 'cancelled'
-                              GROUP BY DATE(created_at) 
-                              ORDER BY created_at ASC`;
+                              WHERE MONTH(${toThaiTime}) = MONTH(${currentThaiDate}) AND YEAR(${toThaiTime}) = YEAR(${currentThaiDate}) AND status != 'cancelled'
+                              GROUP BY DATE(${toThaiTime}) 
+                              ORDER BY ${toThaiTime} ASC`;
                 break;
             case 'year':
                 // Monthly stats for current year
-                chartQuery = `SELECT DATE_FORMAT(created_at, '%b') as date, COALESCE(SUM(CASE WHEN status IN ('delivered', 'processing', 'shipped') THEN total_amount ELSE 0 END), 0) as total 
+                chartQuery = `SELECT DATE_FORMAT(${toThaiTime}, '%b') as date, COALESCE(SUM(CASE WHEN status IN ('delivered', 'processing', 'shipped') THEN total_amount ELSE 0 END), 0) as total 
                               FROM orders 
-                              WHERE YEAR(created_at) = YEAR(CURDATE()) AND status != 'cancelled'
-                              GROUP BY MONTH(created_at) 
-                              ORDER BY created_at ASC`;
+                              WHERE YEAR(${toThaiTime}) = YEAR(${currentThaiDate}) AND status != 'cancelled'
+                              GROUP BY MONTH(${toThaiTime}) 
+                              ORDER BY ${toThaiTime} ASC`;
                 break;
             case 'all':
             default:
                 // Default last 7 days
-                chartQuery = `SELECT DATE_FORMAT(created_at, '%Y-%m-%d') as date, COALESCE(SUM(CASE WHEN status IN ('delivered', 'processing', 'shipped') THEN total_amount ELSE 0 END), 0) as total 
+                chartQuery = `SELECT DATE_FORMAT(${toThaiTime}, '%Y-%m-%d') as date, COALESCE(SUM(CASE WHEN status IN ('delivered', 'processing', 'shipped') THEN total_amount ELSE 0 END), 0) as total 
                               FROM orders 
                               WHERE status != 'cancelled' 
-                              GROUP BY DATE(created_at) 
-                              ORDER BY created_at DESC LIMIT 7`;
+                              GROUP BY DATE(${toThaiTime}) 
+                              ORDER BY ${toThaiTime} DESC LIMIT 7`;
                 break;
         }
 
@@ -134,7 +135,7 @@ export async function GET(request: NextRequest) {
                 totalCredit: Number(creditStats?.total_credit || 0),
                 totalCategories: Number(categoryStats?.category_count || 0),
                 newUsers: Number(newUserStats?.new_user_count || 0),
-                salesHistory: dailySales.reverse()
+                salesHistory: finalSalesHistory
             }
         });
 

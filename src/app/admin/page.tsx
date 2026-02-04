@@ -39,6 +39,7 @@ interface User {
     email: string;
     phone: string;
     role: string;
+    credit_balance: number;
     created_at: string;
 }
 
@@ -474,7 +475,7 @@ export default function AdminDashboard() {
     if (!isAuthenticated || !isAdmin) return null;
 
     return (
-        <div className="min-h-screen bg-[#0f111a] relative overflow-hidden text-white font-sans selection:bg-indigo-500/30">
+        <div className="min-h-screen bg-background relative overflow-hidden text-foreground font-sans selection:bg-indigo-500/30">
             {/* Dynamic Background */}
             <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
                 <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-purple-600/10 rounded-full blur-[140px] animate-pulse" style={{ animationDuration: '8s' }} />
@@ -499,25 +500,72 @@ export default function AdminDashboard() {
                         </p>
                     </div>
 
-                    {/* Back Button - Premium Glass Design */}
-                    {activeTab !== 'dashboard' && (
-                        <button
-                            onClick={() => setActiveTab('dashboard')}
-                            className="relative group px-5 py-2.5 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-0.5"
-                        >
-                            <div className="absolute inset-0 bg-white/[0.03] backdrop-blur-md border border-white/10 group-hover:border-white/20 transition-all rounded-2xl" />
-                            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    {/* Actions & Back Button */}
+                    {/* Actions & Back Button */}
+                    {/* Actions & Back Button */}
+                    <div className="flex flex-col items-end gap-3">
+                        {activeTab !== 'dashboard' && (
+                            <button
+                                onClick={() => setActiveTab('dashboard')}
+                                className="relative group min-w-[180px] justify-center px-5 py-2.5 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-0.5"
+                            >
+                                <div className="absolute inset-0 bg-white/[0.03] backdrop-blur-md border border-white/10 group-hover:border-white/20 transition-all rounded-2xl" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                            <div className="relative flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center group-hover:scale-110 group-hover:rotate-[-5deg] transition-all duration-300 border border-white/10">
-                                    <svg className="w-4 h-4 text-gray-300 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <div className="relative flex items-center justify-center gap-3">
+                                    <svg className="w-5 h-5 text-gray-300 group-hover:text-white group-hover:scale-110 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                     </svg>
+                                    <span className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">กลับหน้าหลัก</span>
                                 </div>
-                                <span className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">กลับหน้าหลัก</span>
-                            </div>
-                        </button>
-                    )}
+                            </button>
+                        )}
+
+                        {activeTab === 'products' && (
+                            <button
+                                onClick={() => {
+                                    setEditingProduct(null);
+                                    setProductForm({
+                                        name: '', brand: '', category: '', price: '', originalPrice: '', image: '', stock: '',
+                                        sizes: Object.fromEntries(AVAILABLE_SIZES.map(s => [s, ''])) as Record<string, string>
+                                    });
+                                    setIsProductModalOpen(true);
+                                }}
+                                className="relative group min-w-[180px] justify-center px-5 py-2.5 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-0.5"
+                            >
+                                <div className="absolute inset-0 bg-white/[0.03] backdrop-blur-md border border-white/10 group-hover:border-white/20 transition-all rounded-2xl" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                                <div className="relative flex items-center justify-center gap-3">
+                                    <svg className="w-5 h-5 text-gray-300 group-hover:text-white group-hover:scale-110 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    <span className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">เพิ่มสินค้าใหม่</span>
+                                </div>
+                            </button>
+                        )}
+
+                        {activeTab === 'users' && (
+                            <button
+                                onClick={() => {
+                                    setEditingUser(null);
+                                    setUserForm({ name: '', email: '', phone: '', username: '', role: 'user', password: '' });
+                                    setIsUserModalOpen(true);
+                                }}
+                                className="relative group min-w-[180px] justify-center px-5 py-2.5 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-0.5"
+                            >
+                                <div className="absolute inset-0 bg-white/[0.03] backdrop-blur-md border border-white/10 group-hover:border-white/20 transition-all rounded-2xl" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                                <div className="relative flex items-center justify-center gap-3">
+                                    <svg className="w-5 h-5 text-gray-300 group-hover:text-white group-hover:scale-110 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    <span className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">เพิ่มผู้ใช้งาน</span>
+                                </div>
+                            </button>
+                        )}
+                    </div>
                 </div>
                 <br />
                 {/* Dashboard Stats */}
@@ -592,33 +640,12 @@ export default function AdminDashboard() {
 
                 {/* Functionality Tabs */}
                 {activeTab !== 'dashboard' && (
-                    <div className="animate-enter space-y-4">
+                    <div className="animate-enter space-y-8">
                         {/* Toolbar */}
                         <div className="flex flex-col sm:flex-row justify-between items-center gap-6 p-4 rounded-none backdrop-blur-md">
                             {/* Search Input Removed */}
 
-                            {activeTab === 'products' && (
-                                <button
-                                    onClick={() => {
-                                        setEditingProduct(null);
-                                        setProductForm({
-                                            name: '', brand: '', category: '', price: '', originalPrice: '', image: '', stock: '',
-                                            sizes: Object.fromEntries(AVAILABLE_SIZES.map(s => [s, ''])) as Record<string, string>
-                                        });
-                                        setIsProductModalOpen(true);
-                                    }}
-                                    className="group relative px-7 py-4 rounded-xl bg-white/5 overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-purple-500/20 hover:bg-white/10"
-                                >
-                                    <div className="relative flex items-center gap-3">
-                                        <div className="w-7 h-7 rounded-lg bg-purple-500/20 flex items-center justify-center group-hover:scale-110 group-hover:rotate-90 group-hover:bg-purple-500/30 transition-all duration-300">
-                                            <svg className="w-4 h-4 text-purple-400 group-hover:text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-                                            </svg>
-                                        </div>
-                                        <span className="text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400 group-hover:from-purple-300 group-hover:to-blue-300 tracking-wide">เพิ่มสินค้าใหม่</span>
-                                    </div>
-                                </button>
-                            )}
+
 
                             {activeTab === 'sales' && (
                                 <div className="flex justify-between items-center px-4 py-2">
@@ -714,29 +741,11 @@ export default function AdminDashboard() {
                                     </div>
                                 </div>
                             )}
-                            {activeTab === 'users' && (
-                                <button
-                                    onClick={() => {
-                                        setEditingUser(null);
-                                        setUserForm({ name: '', email: '', phone: '', username: '', role: 'user', password: '' });
-                                        setIsUserModalOpen(true);
-                                    }}
-                                    className="group relative px-7 py-4 rounded-xl bg-white/5 overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-purple-500/20 hover:bg-white/10"
-                                >
-                                    <div className="relative flex items-center gap-3">
-                                        <div className="w-7 h-7 rounded-lg bg-purple-500/20 flex items-center justify-center group-hover:scale-110 group-hover:rotate-90 group-hover:bg-purple-500/30 transition-all duration-300">
-                                            <svg className="w-4 h-4 text-purple-400 group-hover:text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-                                            </svg>
-                                        </div>
-                                        <span className="text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400 group-hover:from-purple-300 group-hover:to-blue-300 tracking-wide">เพิ่มผู้ใช้งาน</span>
-                                    </div>
-                                </button>
-                            )}
+
                         </div>
 
                         {/* Content Table Container - Internal Scroll */}
-                        <div className="relative rounded-2xl bg-white/[0.02] border border-white/[0.08] overflow-hidden backdrop-blur-xl shadow-2xl">
+                        <div className="relative rounded-none bg-white/[0.02] border border-white/[0.08] overflow-hidden backdrop-blur-xl shadow-2xl">
                             {activeTab === 'sales' ? (
                                 <div className="animate-enter">
                                     <div className="p-8 h-[500px] w-full">
@@ -801,31 +810,47 @@ export default function AdminDashboard() {
                                 <div className="max-h-[440px] overflow-y-auto overflow-x-auto no-scrollbar scroll-smooth">
                                     <table className="w-full border-separate border-spacing-0">
                                         <thead className="sticky top-0 z-30">
-                                            <tr className="bg-[#0f111a]/95 backdrop-blur-3xl border-b border-white/[0.08]">
+                                            <tr className="bg-[#13131a]/95 backdrop-blur-3xl border-b border-indigo-500/20 shadow-sm shadow-black/40">
                                                 {activeTab === 'products' && (
                                                     <>
-                                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">สินค้า</th>
-                                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">หมวดหมู่</th>
-                                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">ราคา</th>
-                                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">สต็อก</th>
-                                                        <th className="px-8 py-5 text-right text-xs font-black text-gray-400 uppercase tracking-wider">จัดการ</th>
+                                                        <th className="px-12 py-5 text-left">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(192,132,252,0.6)]"></span>
+                                                                <span className="text-sm font-bold text-gray-300 uppercase tracking-wide">สินค้า</span>
+                                                            </div>
+                                                        </th>
+                                                        <th className="px-12 py-5 text-left text-sm font-bold text-gray-400 uppercase tracking-wide group-hover:text-white transition-colors">หมวดหมู่</th>
+                                                        <th className="px-12 py-5 text-left text-sm font-bold text-gray-400 uppercase tracking-wide group-hover:text-white transition-colors">ราคา</th>
+                                                        <th className="px-12 py-5 text-center text-sm font-bold text-gray-400 uppercase tracking-wide group-hover:text-white transition-colors">สต็อก</th>
+                                                        <th className="px-12 py-5 text-right text-sm font-bold text-gray-400 uppercase tracking-wide group-hover:text-white transition-colors">จัดการ</th>
                                                     </>
                                                 )}
                                                 {activeTab === 'orders' && (
                                                     <>
-                                                        <th className="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">รหัสคำสั่งซื้อ</th>
-                                                        <th className="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">ลูกค้า</th>
-                                                        <th className="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">ยอดรวม</th>
-                                                        <th className="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">สถานะ</th>
-                                                        <th className="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">วันที่</th>
+                                                        <th className="px-12 py-6 text-left">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)]"></span>
+                                                                <span className="text-sm font-bold text-gray-300 uppercase tracking-wide">รหัสคำสั่งซื้อ</span>
+                                                            </div>
+                                                        </th>
+                                                        <th className="px-12 py-6 text-left text-sm font-bold text-gray-400 uppercase tracking-wide">ลูกค้า</th>
+                                                        <th className="px-12 py-6 text-left text-sm font-bold text-gray-400 uppercase tracking-wide">ยอดรวม</th>
+                                                        <th className="px-12 py-6 text-left text-sm font-bold text-gray-400 uppercase tracking-wide">สถานะ</th>
+                                                        <th className="px-12 py-6 text-left text-sm font-bold text-gray-400 uppercase tracking-wide">วันที่</th>
                                                     </>
                                                 )}
                                                 {activeTab === 'users' && (
                                                     <>
-                                                        <th className="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">ผู้ใช้งาน</th>
-                                                        <th className="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">อีเมล</th>
-                                                        <th className="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">บทบาท</th>
-                                                        <th className="px-8 py-6 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">จัดการ</th>
+                                                        <th className="px-12 py-6 text-left">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-pink-400 shadow-[0_0_8px_rgba(244,114,182,0.6)]"></span>
+                                                                <span className="text-sm font-bold text-gray-300 uppercase tracking-wide">ผู้ใช้งาน</span>
+                                                            </div>
+                                                        </th>
+                                                        <th className="px-12 py-6 text-left text-sm font-bold text-gray-400 uppercase tracking-wide">อีเมล</th>
+                                                        <th className="px-12 py-6 text-left text-sm font-bold text-gray-400 uppercase tracking-wide">บทบาท</th>
+                                                        <th className="px-12 py-6 text-left text-sm font-bold text-gray-400 uppercase tracking-wide">เครดิต</th>
+                                                        <th className="px-12 py-6 text-right text-sm font-bold text-gray-400 uppercase tracking-wide">จัดการ</th>
                                                     </>
                                                 )}
                                             </tr>
@@ -834,7 +859,7 @@ export default function AdminDashboard() {
                                             {/* Products Rows */}
                                             {activeTab === 'products' && filteredProducts.map((p) => (
                                                 <tr key={p.id} className="hover:bg-white/[0.04] transition-all duration-300 group/row border-b border-white/[0.03] last:border-0 text-white">
-                                                    <td className="px-8 py-5">
+                                                    <td className="px-12 py-5">
                                                         <div className="flex items-center gap-5">
                                                             <div className="h-16 w-16 rounded-xl bg-white/[0.04] p-2 border border-white/10 shrink-0">
                                                                 <img src={p.image} alt="" className="h-full w-full object-contain filter drop-shadow-lg" />
@@ -845,12 +870,12 @@ export default function AdminDashboard() {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="px-8 py-5"><span className="px-3.5 py-2 text-xs font-bold uppercase tracking-wide rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20">{p.category}</span></td>
-                                                    <td className="px-8 py-5 text-base font-black text-amber-400">฿{p.price.toLocaleString()}</td>
-                                                    <td className="px-8 py-5 text-base text-center">
+                                                    <td className="px-12 py-5"><span className="px-3.5 py-2 text-xs font-bold uppercase tracking-wide rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20">{p.category}</span></td>
+                                                    <td className="px-12 py-5 text-base font-black text-amber-400">฿{p.price.toLocaleString()}</td>
+                                                    <td className="px-12 py-5 text-base text-center">
                                                         <span className={`font-bold ${Number(p.stock) < 10 ? 'text-rose-400' : 'text-emerald-400'}`}>{p.stock}</span>
                                                     </td>
-                                                    <td className="px-8 py-5 text-right">
+                                                    <td className="px-12 py-5 text-right">
                                                         <div className="flex justify-end gap-3">
                                                             <button onClick={() => openEditProduct(p)} className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-blue-500 rounded-xl transition-all shadow-lg shadow-blue-500/0 hover:shadow-blue-500/30"><svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg></button>
                                                             <button onClick={() => confirmDeleteProduct(p.id)} className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-rose-500 rounded-xl transition-all shadow-lg shadow-rose-500/0 hover:shadow-rose-500/30"><svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
@@ -869,12 +894,12 @@ export default function AdminDashboard() {
                                                     }}
                                                     className="hover:bg-white/[0.05] transition-all duration-300 group/row border-b border-white/[0.02] last:border-0 cursor-pointer text-white"
                                                 >
-                                                    <td className="px-8 py-6 text-sm text-gray-400 font-mono tracking-tight group-hover/row:text-white transition-colors">#{o.order_number}</td>
-                                                    <td className="px-8 py-6">
+                                                    <td className="px-12 py-6 text-sm text-gray-400 font-mono tracking-tight group-hover/row:text-white transition-colors">#{o.order_number}</td>
+                                                    <td className="px-12 py-6">
                                                         <span className="text-sm font-bold text-white">{o.customer_name || 'ลูกค้าทั่วไป'}</span>
                                                     </td>
-                                                    <td className="px-8 py-6 text-sm font-black text-amber-400">฿{o.total_amount.toLocaleString()}</td>
-                                                    <td className="px-8 py-6">
+                                                    <td className="px-12 py-6 text-sm font-black text-amber-400">฿{o.total_amount.toLocaleString()}</td>
+                                                    <td className="px-12 py-6">
                                                         <div className="relative group/status w-fit">
                                                             <select
                                                                 value={o.status}
@@ -908,44 +933,53 @@ export default function AdminDashboard() {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="px-8 py-6 text-sm text-gray-500 font-medium">{new Date(o.created_at).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
+                                                    <td className="px-12 py-6 text-sm text-gray-500 font-medium">{new Date(o.created_at).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
                                                 </tr>
                                             ))}
 
                                             {/* Users Rows */}
                                             {activeTab === 'users' && filteredUsers.map((u) => (
                                                 <tr key={u.id} className="hover:bg-white/[0.03] transition-all duration-300 group/row border-b border-white/[0.02] last:border-0 text-white">
-                                                    <td className="px-8 py-6">
-                                                        <div className="flex items-center gap-4">
-                                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-lg">
-                                                                {u.username.charAt(0).toUpperCase()}
-                                                            </div>
-                                                            <div>
-                                                                <div className="text-sm font-bold text-white group-hover/row:text-blue-400 transition-colors">{u.username}</div>
-                                                                <div className="text-xs text-gray-500 mt-0.5">{u.name || 'ไม่ระบุชื่อ'}</div>
-                                                            </div>
+                                                    <td className="px-12 py-6">
+                                                        <div>
+                                                            <div className="text-sm font-bold text-white group-hover/row:text-blue-400 transition-colors">{u.username}</div>
+                                                            <div className="text-xs text-gray-500 mt-0.5">{u.name || 'ไม่ระบุชื่อ'}</div>
                                                         </div>
                                                     </td>
-                                                    <td className="px-8 py-6 text-sm text-gray-400 font-medium">{u.email}</td>
-                                                    <td className="px-8 py-6">
+                                                    <td className="px-12 py-6 text-sm text-gray-400 font-medium">{u.email}</td>
+                                                    <td className="px-12 py-6">
                                                         <div className="relative group/select w-fit">
                                                             <select
                                                                 value={u.role}
                                                                 onChange={(e) => updateUserRole(u.id, e.target.value)}
-                                                                className={`appearance-none pl-2 pr-10 py-2 text-[10px] font-black uppercase tracking-wider !rounded-none !border-0 !border-b-2 cursor-pointer outline-none transition-all duration-300
+                                                                className={`pl-2 pr-6 py-2 text-[10px] font-black uppercase tracking-wider cursor-pointer transition-all duration-300
                                                                 ${u.role === 'admin'
-                                                                        ? '!bg-purple-500/5 text-purple-400 border-purple-500/40 hover:border-purple-500/60'
-                                                                        : '!bg-transparent text-gray-400 border-white/20 hover:border-white/40'}`}
+                                                                        ? 'text-purple-400'
+                                                                        : 'text-gray-400'}`}
+                                                                style={{
+                                                                    backgroundColor: u.role === 'admin' ? 'rgba(168,85,247,0.05)' : 'transparent',
+                                                                    border: 'none',
+                                                                    borderBottom: u.role === 'admin' ? '2px solid rgba(168,85,247,0.4)' : '2px solid rgba(255,255,255,0.2)',
+                                                                    borderRadius: 0,
+                                                                    appearance: 'none',
+                                                                    WebkitAppearance: 'none',
+                                                                    MozAppearance: 'none',
+                                                                    outline: 'none',
+                                                                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                                                                    backgroundRepeat: 'no-repeat',
+                                                                    backgroundPosition: 'right 0 center',
+                                                                    backgroundSize: '14px'
+                                                                }}
                                                             >
-                                                                <option value="user" className="bg-[#121214]">ผู้ใช้งานทั่วไป</option>
-                                                                <option value="admin" className="bg-[#121214]">ผู้ดูแลระบบ</option>
+                                                                <option value="user" style={{ backgroundColor: '#121214' }}>ผู้ใช้งานทั่วไป</option>
+                                                                <option value="admin" style={{ backgroundColor: '#121214' }}>ผู้ดูแลระบบ</option>
                                                             </select>
-                                                            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">
-                                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                                            </div>
                                                         </div>
                                                     </td>
-                                                    <td className="px-8 py-6 text-right">
+                                                    <td className="px-12 py-6 text-sm font-bold text-emerald-400">
+                                                        ฿{Number(u.credit_balance || 0).toLocaleString()}
+                                                    </td>
+                                                    <td className="px-12 py-6 text-right">
                                                         <div className="flex justify-end gap-3">
                                                             <button onClick={() => openEditUser(u)} className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-blue-500 rounded-xl transition-all shadow-lg shadow-blue-500/0 hover:shadow-blue-500/20"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg></button>
                                                             <button onClick={() => confirmDeleteUser(u.id)} className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-rose-500 rounded-xl transition-all shadow-lg shadow-rose-500/0 hover:shadow-rose-500/20"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
@@ -999,11 +1033,11 @@ export default function AdminDashboard() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
                     <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={() => setIsProductModalOpen(false)}></div>
 
-                    <div className="relative z-10 w-full max-w-4xl bg-gradient-to-b from-[#141418] to-[#0c0c0e] border border-white/10 rounded-xl shadow-2xl overflow-hidden animate-enter">
+                    <div className="relative z-10 w-full max-w-4xl bg-[#0c0c0e] border border-white/10 rounded-none shadow-2xl overflow-hidden animate-enter">
 
                         {/* Header */}
-                        <div className="relative px-8 py-6 border-b border-white/5">
-                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+                        <div className="relative px-6 py-5 border-b border-white/10 bg-gradient-to-r from-blue-500/10 via-indigo-500/5 to-transparent">
+                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-blue-500 via-indigo-500 to-transparent" />
                             <div className="flex justify-between items-center">
                                 <div>
                                     <h2 className="text-2xl font-bold text-white">
@@ -1015,9 +1049,9 @@ export default function AdminDashboard() {
                                 </div>
                                 <button
                                     onClick={() => setIsProductModalOpen(false)}
-                                    className="w-10 h-10 rounded-xl bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/30 flex items-center justify-center text-gray-400 hover:text-red-400 transition-all"
+                                    className="w-8 h-8 flex items-center justify-center bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-all"
                                 >
-                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
@@ -1025,7 +1059,7 @@ export default function AdminDashboard() {
                         </div>
 
                         {/* Content */}
-                        <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                        <div className="p-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
                             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
                                 {/* Left Column - Form Fields */}
@@ -1041,58 +1075,65 @@ export default function AdminDashboard() {
                                             placeholder="เช่น Nike Air Jordan 1 Retro"
                                         />
                                         <div className="grid grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">แบรนด์</label>
-                                                <select
-                                                    value={productForm.brand}
-                                                    onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
-                                                    className="w-full text-white text-sm focus:outline-none cursor-pointer"
-                                                    style={{
-                                                        backgroundColor: 'transparent',
-                                                        border: 'none',
-                                                        borderBottom: '1px solid rgba(255,255,255,0.2)',
-                                                        borderRadius: 0,
-                                                        padding: '12px 24px 12px 0',
-                                                        appearance: 'none',
-                                                        WebkitAppearance: 'none',
-                                                        MozAppearance: 'none',
-                                                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
-                                                        backgroundRepeat: 'no-repeat',
-                                                        backgroundPosition: 'right 0 center',
-                                                        backgroundSize: '16px'
-                                                    }}
-                                                >
-                                                    <option value="" style={{ backgroundColor: '#1a1a1e' }}>เลือกแบรนด์</option>
-                                                    <option value="Nike" style={{ backgroundColor: '#1a1a1e' }}>Nike</option>
-                                                    <option value="Adidas" style={{ backgroundColor: '#1a1a1e' }}>Adidas</option>
-                                                </select>
+                                            <div className="relative group/select">
+                                                <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 transition-colors group-focus-within/select:text-blue-400">แบรนด์</label>
+                                                <div className="relative">
+                                                    <select
+                                                        value={productForm.brand}
+                                                        onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
+                                                        className="w-full py-3 pr-6 text-white text-sm focus:outline-none transition-all cursor-pointer"
+                                                        style={{
+                                                            backgroundColor: 'transparent',
+                                                            border: 'none',
+                                                            borderBottom: '1px solid rgba(255,255,255,0.2)',
+                                                            borderRadius: 0,
+                                                            appearance: 'none',
+                                                            WebkitAppearance: 'none',
+                                                            MozAppearance: 'none',
+                                                            outline: 'none',
+                                                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                                                            backgroundRepeat: 'no-repeat',
+                                                            backgroundPosition: 'right 0 center',
+                                                            backgroundSize: '16px'
+                                                        }}
+                                                    >
+                                                        <option value="" style={{ backgroundColor: '#0c0c0e' }}>เลือกแบรนด์</option>
+                                                        <option value="Nike" style={{ backgroundColor: '#0c0c0e' }}>Nike</option>
+                                                        <option value="Adidas" style={{ backgroundColor: '#0c0c0e' }}>Adidas</option>
+                                                        <option value="New Balance" style={{ backgroundColor: '#0c0c0e' }}>New Balance</option>
+                                                        <option value="Converse" style={{ backgroundColor: '#0c0c0e' }}>Converse</option>
+                                                        <option value="Vans" style={{ backgroundColor: '#0c0c0e' }}>Vans</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">หมวดหมู่</label>
-                                                <select
-                                                    value={productForm.category}
-                                                    onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
-                                                    className="w-full text-white text-sm focus:outline-none cursor-pointer"
-                                                    style={{
-                                                        backgroundColor: 'transparent',
-                                                        border: 'none',
-                                                        borderBottom: '1px solid rgba(255,255,255,0.2)',
-                                                        borderRadius: 0,
-                                                        padding: '12px 24px 12px 0',
-                                                        appearance: 'none',
-                                                        WebkitAppearance: 'none',
-                                                        MozAppearance: 'none',
-                                                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
-                                                        backgroundRepeat: 'no-repeat',
-                                                        backgroundPosition: 'right 0 center',
-                                                        backgroundSize: '16px'
-                                                    }}
-                                                >
-                                                    <option value="" style={{ backgroundColor: '#1a1a1e' }}>เลือกหมวดหมู่</option>
-                                                    <option value="วิ่ง" style={{ backgroundColor: '#1a1a1e' }}>วิ่ง</option>
-                                                    <option value="ไลฟ์สไตล์" style={{ backgroundColor: '#1a1a1e' }}>ไลฟ์สไตล์</option>
-                                                    <option value="บาสเก็ตบอล" style={{ backgroundColor: '#1a1a1e' }}>บาสเก็ตบอล</option>
-                                                </select>
+                                            <div className="relative group/select">
+                                                <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 transition-colors group-focus-within/select:text-blue-400">หมวดหมู่</label>
+                                                <div className="relative">
+                                                    <select
+                                                        value={productForm.category}
+                                                        onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
+                                                        className="w-full py-3 pr-6 text-white text-sm focus:outline-none transition-all cursor-pointer"
+                                                        style={{
+                                                            backgroundColor: 'transparent',
+                                                            border: 'none',
+                                                            borderBottom: '1px solid rgba(255,255,255,0.2)',
+                                                            borderRadius: 0,
+                                                            appearance: 'none',
+                                                            WebkitAppearance: 'none',
+                                                            MozAppearance: 'none',
+                                                            outline: 'none',
+                                                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                                                            backgroundRepeat: 'no-repeat',
+                                                            backgroundPosition: 'right 0 center',
+                                                            backgroundSize: '16px'
+                                                        }}
+                                                    >
+                                                        <option value="" style={{ backgroundColor: '#0c0c0e' }}>เลือกหมวดหมู่</option>
+                                                        <option value="วิ่ง" style={{ backgroundColor: '#0c0c0e' }}>วิ่ง</option>
+                                                        <option value="ไลฟ์สไตล์" style={{ backgroundColor: '#0c0c0e' }}>ไลฟ์สไตล์</option>
+                                                        <option value="บาสเก็ตบอล" style={{ backgroundColor: '#0c0c0e' }}>บาสเก็ตบอล</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1209,16 +1250,16 @@ export default function AdminDashboard() {
                         </div>
 
                         {/* Footer */}
-                        <div className="px-8 py-5 border-t border-white/5 bg-white/[0.02] flex justify-end gap-3">
+                        <div className="px-6 py-4 border-t border-white/10 bg-white/[0.02] flex justify-end gap-3">
                             <button
                                 onClick={() => setIsProductModalOpen(false)}
-                                className="px-6 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white font-medium text-sm transition-all"
+                                className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white text-sm font-medium transition-all"
                             >
                                 ยกเลิก
                             </button>
                             <button
                                 onClick={handleSaveProduct}
-                                className="px-8 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all"
+                                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-sm font-bold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all"
                             >
                                 {editingProduct ? 'บันทึกการเปลี่ยนแปลง' : 'เพิ่มสินค้า'}
                             </button>
@@ -1232,72 +1273,87 @@ export default function AdminDashboard() {
                 isUserModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                         <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsUserModalOpen(false)} />
-                        <div className="relative z-10 w-full max-w-2xl bg-[#141418] border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-enter">
-                            <div className="flex justify-between items-start p-8 pb-0">
+                        <div className="relative z-10 w-full max-w-2xl bg-[#0c0c0e] border border-white/10 rounded-none shadow-2xl overflow-hidden animate-enter">
+                            {/* Header with gradient accent */}
+                            <div className="relative border-b border-white/10 bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-transparent">
+                                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-indigo-500 via-purple-500 to-transparent" />
+                                <div className="flex justify-between items-center p-6">
+                                    <div>
+                                        <h2 className="text-xl font-bold text-white">{editingUser ? 'แก้ไขผู้ใช้งาน' : 'เพิ่มผู้ใช้งานใหม่'}</h2>
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            {editingUser ? `รหัสผู้ใช้: #${editingUser.id}` : 'กรอกข้อมูลผู้ใช้งานให้ครบถ้วน'}
+                                        </p>
+                                    </div>
+                                    <button onClick={() => setIsUserModalOpen(false)} className="w-8 h-8 flex items-center justify-center bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-all">
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Form Content */}
+                            <div className="p-6 space-y-5">
+                                <div className="grid grid-cols-2 gap-5">
+                                    <Input label="ชื่อผู้ใช้ (Username)" value={userForm.username} onChange={v => setUserForm({ ...userForm, username: v })} placeholder="Username" />
+                                    <Input label="ชื่อ-นามสกุล" value={userForm.name} onChange={v => setUserForm({ ...userForm, name: v })} placeholder="ชื่อเต็ม" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-5">
+                                    <Input label="อีเมล" value={userForm.email} onChange={v => setUserForm({ ...userForm, email: v })} placeholder="email@example.com" />
+                                    <Input label="เบอร์โทรศัพท์" value={userForm.phone} onChange={v => setUserForm({ ...userForm, phone: v })} placeholder="08x-xxx-xxxx" />
+                                </div>
                                 <div>
-                                    <h2 className="text-3xl font-bold text-white mb-2">เพิ่มผู้ใช้งานใหม่</h2>
-                                    <p className="text-sm text-gray-500 mt-1">
-                                        {editingUser ? `รหัสผู้ใช้: #${editingUser.id}` : 'กรอกข้อมูลผู้ใช้งานให้ครบถ้วน'}
-                                    </p>
+                                    <Input
+                                        label={editingUser ? "รหัสผ่านใหม่ (ปล่อยว่างถ้าไม่ต้องการเปลี่ยน)" : "รหัสผ่าน"}
+                                        value={userForm.password}
+                                        onChange={v => setUserForm({ ...userForm, password: v })}
+                                        placeholder="••••••••"
+                                        type="password"
+                                    />
                                 </div>
-                                <button onClick={() => setIsUserModalOpen(false)} className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all">
-                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                                </button>
-                            </div>
-
-                            <div className="p-8 space-y-8">
-                                <div className="space-y-8">
-                                    <div className="grid grid-cols-2 gap-6">
-                                        <Input label="ชื่อผู้ใช้ (Username)" value={userForm.username} onChange={v => setUserForm({ ...userForm, username: v })} placeholder="Username" />
-                                        <Input label="ชื่อ-นามสกุล" value={userForm.name} onChange={v => setUserForm({ ...userForm, name: v })} placeholder="ชื่อเต็ม" />
+                                <div className="relative group/select">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest transition-colors group-focus-within/select:text-indigo-400">บทบาท (Role)</label>
+                                        <span className={`text-[10px] font-bold uppercase tracking-wider ${userForm.role === 'admin' ? 'text-purple-400' : 'text-gray-500'}`}>
+                                            {userForm.role === 'admin' ? 'สิทธิ์ผู้ดูแลระบบ' : 'ผู้ใช้งานทั่วไป'}
+                                        </span>
                                     </div>
-                                    <div className="grid grid-cols-2 gap-6">
-                                        <Input label="อีเมล" value={userForm.email} onChange={v => setUserForm({ ...userForm, email: v })} placeholder="email@example.com" />
-                                        <Input label="เบอร์โทรศัพท์" value={userForm.phone} onChange={v => setUserForm({ ...userForm, phone: v })} placeholder="08x-xxx-xxxx" />
-                                    </div>
-                                    <div className="grid grid-cols-1 gap-6">
-                                        <Input
-                                            label={editingUser ? "รหัสผ่านใหม่ (ปล่อยว่างถ้าไม่ต้องการเปลี่ยน)" : "รหัสผ่าน"}
-                                            value={userForm.password}
-                                            onChange={v => setUserForm({ ...userForm, password: v })}
-                                            placeholder="••••••••"
-                                            type="password"
-                                        />
-                                    </div>
-                                    <div className="relative group/select">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest transition-colors group-focus-within/select:text-blue-400">บทบาท (Role)</label>
-                                            <span className={`text-[10px] font-bold uppercase tracking-wider ${userForm.role === 'admin' ? 'text-purple-400' : 'text-gray-500'}`}>
-                                                {userForm.role === 'admin' ? 'สิทธิ์ผู้ดูแลระบบ' : 'ผู้ใช้งานทั่วไป'}
-                                            </span>
-                                        </div>
-                                        <div className="relative">
-                                            <select
-                                                value={userForm.role}
-                                                onChange={(e) => setUserForm({ ...userForm, role: e.target.value })}
-                                                className="w-full py-3 bg-transparent border-0 border-b border-white/20 text-white text-sm focus:border-blue-500 focus:outline-none transition-all cursor-pointer appearance-none"
-                                            >
-                                                <option value="user" className="bg-[#141418]">ผู้ใช้งานทั่วไป (USER)</option>
-                                                <option value="admin" className="bg-[#141418]">ผู้ดูแลระบบ (ADMIN)</option>
-                                            </select>
-                                            <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 group-focus-within/select:text-blue-400 transition-colors">
-                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                            </div>
-                                        </div>
+                                    <div className="relative">
+                                        <select
+                                            value={userForm.role}
+                                            onChange={(e) => setUserForm({ ...userForm, role: e.target.value })}
+                                            className="w-full py-3 pr-6 text-white text-sm focus:outline-none transition-all cursor-pointer"
+                                            style={{
+                                                backgroundColor: 'transparent',
+                                                border: 'none',
+                                                borderBottom: '1px solid rgba(255,255,255,0.2)',
+                                                borderRadius: 0,
+                                                appearance: 'none',
+                                                WebkitAppearance: 'none',
+                                                MozAppearance: 'none',
+                                                outline: 'none',
+                                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                                                backgroundRepeat: 'no-repeat',
+                                                backgroundPosition: 'right 0 center',
+                                                backgroundSize: '16px'
+                                            }}
+                                        >
+                                            <option value="user" style={{ backgroundColor: '#0c0c0e' }}>ผู้ใช้งานทั่วไป (USER)</option>
+                                            <option value="admin" style={{ backgroundColor: '#0c0c0e' }}>ผู้ดูแลระบบ (ADMIN)</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="px-8 py-5 border-t border-white/5 bg-white/[0.02] flex justify-end gap-3">
+                            {/* Footer with buttons */}
+                            <div className="px-6 py-4 border-t border-white/10 bg-white/[0.02] flex justify-end gap-3">
                                 <button
                                     onClick={() => setIsUserModalOpen(false)}
-                                    className="px-6 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white font-medium text-sm transition-all"
+                                    className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white text-sm font-medium transition-all"
                                 >
                                     ยกเลิก
                                 </button>
                                 <button
                                     onClick={handleSaveUser}
-                                    className="px-8 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all"
+                                    className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-sm font-bold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all"
                                 >
                                     {editingUser ? 'บันทึกการเปลี่ยนแปลง' : 'ยืนยันเพิ่มผู้ใช้งาน'}
                                 </button>
